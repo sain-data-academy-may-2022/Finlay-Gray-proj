@@ -38,6 +38,7 @@ def product_list_index(list):
 # function that handles the product menu
 def product_menu_func(products):
     option = input(product_menu_text).strip()
+    clear_screen()
     # prints product list
     if option == '1':
         product_list_index(products)
@@ -98,13 +99,16 @@ def order_menu_func(orders):
     
 # main loop
 while run:
+    clear_screen()
     to_continue = input(first_menu_text).strip()
     if to_continue == '0':
         run = False
     elif to_continue == '1':
         product_menu = True
+        clear_screen()
     elif to_continue == '2':
         order_menu = True
+        clear_screen()
     else:
         print('\nPlease enter 0, 1 or 2!\n')
     # runs production menu function
