@@ -8,6 +8,7 @@ order_menu = False
 # setting up menu texts that will show up on screen
 first_menu_text = '''\nWelcome to Gray's Cafe!\n
 Enter 1 to view prouct menu
+Enter 2 to view order menu
 Enter 0 to quit
 > '''
 product_menu_text = '''Enter 1 to view products list
@@ -16,6 +17,13 @@ Enter 3 to update current product
 Enter 4 to delete a product
 Enter 0 to return to main menu 
 > '''
+order_menu_text = '''Enter 1 to view orders
+Enter 2 to create a new order
+Enter 3 to update an existing order status
+Enter 4 to update an existing order
+Enter 5 to delete an order
+Enter 0 to return to main menu
+'''
 # function that prints out product list with corresponding index
 def product_list_index(list):
     for i in range(len(list)):
@@ -76,7 +84,11 @@ def product_menu_func(products):
     return True
 
 def order_menu_func(orders):
-    pass
+    option = input(product_menu_text).strip()
+    if option == '0':
+        return False
+
+    return True
     
 # main loop
 while run:
