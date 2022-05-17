@@ -29,11 +29,21 @@ Enter 3 to update an existing order status
 Enter 4 to update an existing order
 Enter 5 to delete an order
 Enter 0 to return to main menu
-'''
+> '''
+
+status_list = ['PREPARING','COMPLETED']
 # function that prints out product list with corresponding index
 def product_list_index(list):
     for i in range(len(list)):
         print(f'Product name: {list[i]}\nIndex value: {i}\n')
+
+def orders_list_index(list):
+    for i in range(len(list)):
+        print(f'Order: {list[i]}\nIndex value: {i}\n')
+
+def status_list_index(list):
+    for i in range(len(list)):
+        print(f'Status: {list[i]}\nIndex value: {i}\n')
 
 # function that handles the product menu
 def product_menu_func(products):
@@ -90,10 +100,46 @@ def product_menu_func(products):
     # keeps the loop running
     return True
 
-def order_menu_func(orders):
-    option = input(product_menu_text).strip()
-    if option == '0':
+def order_menu_func(orders,status_list):
+    option = input(order_menu_text).strip()
+    if option == '1':
+        orders_list_index(orders)
+
+    elif option == '2':
+        name = input('Enter customer name\n> ')
+        address = input('Enter customer address\n> ')
+        phone_no = input('Enter customer phone number\n>')
+        status = 'PREPARING'
+        new_order = {
+            "customer_name": name,
+            "customer_address": address,
+            "customer_phone": phone_no,
+            "status": status
+        }
+        orders.append(new_order)
+    elif option == '3':
+        orders_list_index(orders)
+        order_to_update = int(input('Enter the index of the order status you would like to update\n> '))
+        status_list_index(status_list)
+        status_index = int(input('Enter the index of the status you would like to update to\n> '))
+        orders[order_to_update]["status"] = status_list[status_index]
+    elif option == '4':
+        orders_list_index(orders)
+        order_to_update = int(input('Enter the index of the order status you would like to update\n> '))
+        for key,value in orders[order_to_update].items():
+            if key == "status":
+                continue
+            yes_or_no = input(f'Do you want to update the {key} from {value}? (y/n)\n> ')
+            if yes_or_no == 'y':
+                new_value = input('Enter new value\n> ')
+                orders[order_to_update][key] = new_value
+            else:
+                continue
+
+    elif option == '0':
         return False
+    else:
+        print('\nPlease enter a valid input\n')
 
     return True
     
@@ -117,6 +163,6 @@ while run:
         if not(cont):
             product_menu = False
     while order_menu:
-        cont = order_menu_func(orders)
+        cont = order_menu_func(orders,status_list)
         if not(cont):
             order_menu = False
