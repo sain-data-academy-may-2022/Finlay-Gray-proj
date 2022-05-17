@@ -1,9 +1,15 @@
+# imports
+import os
+
 # setting up inital variables
 products = []
 orders = []
 run = True
 product_menu = False
 order_menu = False
+
+def clear_screen():
+    os.system('clear')
 
 # setting up menu texts that will show up on screen
 first_menu_text = '''\nWelcome to Gray's Cafe!\n
