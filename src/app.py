@@ -136,6 +136,10 @@ def order_menu_func(orders,status_list):
                 orders[order_to_update][key] = new_value
             else:
                 continue
+    elif option == '5':
+        orders_list_index(orders)
+        to_delete = int(input('Enter the index of the order you would like to delete\n> '))
+        orders.pop(to_delete)
 
     elif option == '0':
         return False
