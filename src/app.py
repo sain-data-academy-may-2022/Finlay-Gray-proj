@@ -1,10 +1,12 @@
 # imports
 import os
-# work
+import time
+# this is how you get current time time.asctime( time.localtime(time.time()) )
 # setting up inital variables
 products = []
 orders = []
 run = True
+
 product_menu = False
 order_menu = False
 a = 0
@@ -14,7 +16,7 @@ def clear_screen():
 
 # setting up menu texts that will show up on screen
 first_menu_text = '''\nWelcome to Gray's Cafe!\n
-Enter 1 to view prouct menu
+Enter 1 to view product menu
 Enter 2 to view order menu
 Enter 0 to quit
 > '''
@@ -32,7 +34,7 @@ Enter 5 to delete an order
 Enter 0 to return to main menu
 > '''
 
-status_list = ['PREPARING','COMPLETED']
+status_list = ['PREPARING','QUALITY CHECK','OUT FOR DELIVERY','DELIVERED']
 # function that prints out product list with corresponding index
 def product_list_index(list):
     for i in range(len(list)):
@@ -104,42 +106,65 @@ def product_menu_func(products):
 def order_menu_func(orders,status_list):
     option = input(order_menu_text).strip()
     if option == '1':
+        clear_screen()
         orders_list_index(orders)
+        cont = input('Press any key to return to menu')
+        clear_screen()
 
     elif option == '2':
-        name = input('Enter customer name\n> ')
-        address = input('Enter customer address\n> ')
-        phone_no = input('Enter customer phone number\n>')
-        status = 'PREPARING'
-        new_order = {
-            "customer_name": name,
-            "customer_address": address,
-            "customer_phone": phone_no,
-            "status": status
-        }
-        orders.append(new_order)
+        clear_screen()
+        try:
+            name = input('Enter customer name\n> ')
+            address = input('Enter customer address\n> ')
+            phone_no = input('Enter customer phone number\n>')
+            status = 'PREPARING'
+            new_order = {
+                "customer_name": name,
+                "customer_address": address,
+                "customer_phone": phone_no,
+                "status": status,
+                "order-time":time.asctime( time.localtime(time.time()) )
+            }
+            orders.append(new_order)
+            clear_screen()
+        except:
+            print('You have not entered a valid input')
     elif option == '3':
+        clear_screen()
         orders_list_index(orders)
-        order_to_update = int(input('Enter the index of the order status you would like to update\n> '))
-        status_list_index(status_list)
-        status_index = int(input('Enter the index of the status you would like to update to\n> '))
-        orders[order_to_update]["status"] = status_list[status_index]
+        try:
+            order_to_update = int(input('Enter the index of the order status you would like to update\n> '))
+            status_list_index(status_list)
+            status_index = int(input('Enter the index of the status you would like to update to\n> '))
+            orders[order_to_update]["status"] = status_list[status_index]
+            clear_screen()
+        except:
+            print('You have not entered a valid input')
     elif option == '4':
+        clear_screen()
         orders_list_index(orders)
-        order_to_update = int(input('Enter the index of the order status you would like to update\n> '))
-        for key,value in orders[order_to_update].items():
-            if key == "status":
-                continue
-            yes_or_no = input(f'Do you want to update the {key} from {value}? (y/n)\n> ')
-            if yes_or_no == 'y':
-                new_value = input('Enter new value\n> ')
-                orders[order_to_update][key] = new_value
-            else:
-                continue
+        try:
+            order_to_update = int(input('Enter the index of the order status you would like to update\n> '))
+            for key,value in orders[order_to_update].items():
+                if key == "status" or key == "order-time":
+                    continue
+                yes_or_no = input(f'Do you want to update the {key} from {value}? (y/n)\n> ')
+                if yes_or_no == 'y':
+                    new_value = input('Enter new value\n> ')
+                    orders[order_to_update][key] = new_value
+                else:
+                    continue
+            clear_screen()
+        except:
+            print('You have not entered a valid input')
     elif option == '5':
+        clear_screen()
         orders_list_index(orders)
-        to_delete = int(input('Enter the index of the order you would like to delete\n> '))
-        orders.pop(to_delete)
+        try:
+            to_delete = int(input('Enter the index of the order you would like to delete\n> '))
+            orders.pop(to_delete)
+        except:
+            print('You have not entered a valid input')
 
     elif option == '0':
         return False
