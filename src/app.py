@@ -50,21 +50,25 @@ def status_list_index(list):
 
 # function that handles the product menu
 def product_menu_func(products):
-    option = input(product_menu_text).strip()
     clear_screen()
+    option = input(product_menu_text).strip()
     # prints product list
     if option == '1':
         product_list_index(products)
+        input('Enter any key to continue')
     # allows user to add a product to the list
     elif option == '2':
+        clear_screen()
         product = input('Enter the name of the product you would like to add\n> ').lower().strip()
         if product in products:
             print(f'\nThis product already exists in your list\n')
         else:
             products.append(product)
             print(f'\nYou have added {product} to your products\n')
+        input('Enter any key to continue')
     # allows user to update the name of a product in the list
     elif option == '3':
+        clear_screen()
         if products != []:
             product_list_index(products)
             try:
@@ -76,10 +80,13 @@ def product_menu_func(products):
                 else:
                     products[product_index] = product_new_name
                     print(f'\n{product_old_name} has been replaced with {product_new_name}\n')
+                input('Enter any key to continue')
             except:
                 print('\nPLease enter valid input\n')
+                input('Enter any key to continue')
         else:
             print('\nYou do not have any products to update\n')
+            input('Enter any key to continue')
     # allows user to delete a product from the list
     elif option == '4':
         if products != []:
@@ -104,13 +111,12 @@ def product_menu_func(products):
     return True
 
 def order_menu_func(orders,status_list):
+    clear_screen()
     option = input(order_menu_text).strip()
     if option == '1':
         clear_screen()
         orders_list_index(orders)
         cont = input('Press any key to return to menu')
-        clear_screen()
-
     elif option == '2':
         clear_screen()
         try:
@@ -126,9 +132,9 @@ def order_menu_func(orders,status_list):
                 "order-time":time.asctime( time.localtime(time.time()) )
             }
             orders.append(new_order)
-            clear_screen()
         except:
             print('You have not entered a valid input')
+            input('Press any key to continue')
     elif option == '3':
         clear_screen()
         orders_list_index(orders)
@@ -137,9 +143,9 @@ def order_menu_func(orders,status_list):
             status_list_index(status_list)
             status_index = int(input('Enter the index of the status you would like to update to\n> '))
             orders[order_to_update]["status"] = status_list[status_index]
-            clear_screen()
         except:
             print('You have not entered a valid input')
+            input('Press any key to continue')
     elif option == '4':
         clear_screen()
         orders_list_index(orders)
@@ -154,9 +160,9 @@ def order_menu_func(orders,status_list):
                     orders[order_to_update][key] = new_value
                 else:
                     continue
-            clear_screen()
         except:
             print('You have not entered a valid input')
+            input('Press any key to continue')
     elif option == '5':
         clear_screen()
         orders_list_index(orders)
@@ -165,6 +171,7 @@ def order_menu_func(orders,status_list):
             orders.pop(to_delete)
         except:
             print('You have not entered a valid input')
+            input('Press any key to continue')
 
     elif option == '0':
         return False
