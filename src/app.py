@@ -7,6 +7,7 @@ orders = []
 run = True
 product_menu = False
 order_menu = False
+a = 0
 
 def clear_screen():
     os.system('clear')
@@ -166,5 +167,3 @@ while run:
         cont = order_menu_func(orders,status_list)
         if not(cont):
             order_menu = False
-
-# is this working
