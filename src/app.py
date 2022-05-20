@@ -1,10 +1,19 @@
 # imports
 import os
 import time
+import json
 # this is how you get current time time.asctime( time.localtime(time.time()) )
 # setting up inital variables
-products = []
-orders = []
+try:
+    with open('products.json') as product_file:
+        products = json.load(product_file)
+except:
+    products = []
+try:
+    with open('orders.json','r') as file:
+        orders = json.load(file)
+except:
+    orders = []
 run = True
 
 product_menu = False
@@ -147,6 +156,7 @@ def order_menu_func(orders,status_list):
             orders_list_index(orders)
             try:
                 order_to_update = int(input('Enter the index of the order status you would like to update\n> '))
+                clear_screen()
                 status_list_index(status_list)
                 status_index = int(input('Enter the index of the status you would like to update to\n> '))
                 orders[order_to_update]["status"] = status_list[status_index]
@@ -216,3 +226,11 @@ while run:
         cont = order_menu_func(orders,status_list)
         if not(cont):
             order_menu = False
+
+with open('orders.json',mode='w') as file:
+    to_file = json.dumps(orders)
+    file.write(to_file)
+
+with open('products.json',mode='w') as product_file:
+    to_file = json.dumps(products)
+    product_file.write(to_file)
