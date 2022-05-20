@@ -228,7 +228,7 @@ while run:
             order_menu = False
 
 with open('orders.json',mode='w') as file:
-    to_file = json.dumps(orders)
+    to_file = json.dumps(orders,indent='    ')
     file.write(to_file)
 
 with open('products.json',mode='w') as product_file:
