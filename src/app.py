@@ -14,10 +14,18 @@ try:
         orders = json.load(file)
 except:
     orders = []
+
+try:
+    with open('couriers.json') as couriers_file:
+        couriers = json.load(couriers_file)
+except:
+    couriers = []
+
 run = True
 
 product_menu = False
 order_menu = False
+courier_menu = False
 a = 0
 
 def clear_screen():
@@ -26,7 +34,8 @@ def clear_screen():
 # setting up menu texts that will show up on screen
 first_menu_text = '''\nWelcome to Gray's Cafe!\n
 Enter 1 to view product menu
-Enter 2 to view order menu
+Enter 2 to view courier menu
+Enter 3 to view order menu
 Enter 0 to quit
 > '''
 product_menu_text = '''Enter 1 to view products list
@@ -42,6 +51,12 @@ Enter 4 to update an existing order
 Enter 5 to delete an order
 Enter 0 to return to main menu
 > '''
+courier_menu_text= '''Enter 1 to view courier list
+Enter 2 to create a new courier
+Enter 3 to update current courier
+Enter 4 to delete a courier
+Enter 0 to return to main menu 
+'''
 
 status_list = ['PREPARING','QUALITY CHECK','OUT FOR DELIVERY','DELIVERED']
 # function that prints out product list with corresponding index
@@ -56,6 +71,11 @@ def orders_list_index(list):
 def status_list_index(list):
     for i in range(len(list)):
         print(f'Status: {list[i]}\nIndex value: {i}\n')
+
+def couriers_list_index(list):
+    for i in range(len(list)):
+        print(f'Courier: {list[i]}\nIndex value: {i}\n')
+    
 
 # function that handles the product menu
 def product_menu_func(products):
@@ -122,7 +142,111 @@ def product_menu_func(products):
     # keeps the loop running
     return True
 
-def order_menu_func(orders,status_list):
+
+def courier_menu_func(couriers,orders):
+    clear_screen()
+    option = input(courier_menu_text).strip()
+    # prints courier list
+    if option == '1':
+        clear_screen()
+        if couriers == []:
+            print('There are no couriers in your list!\n')
+        else:
+            couriers_list_index(couriers)
+        input('Press enter to continue')
+    # allows user to add a courier to the list
+    elif option == '2':
+        clear_screen()
+        courier = input('Enter the name of the courier you would like to add\n> ').lower().strip()
+        if courier in couriers:
+            print(f'\nThis courier already exists in your list\n')
+        else:
+            couriers.append(courier)
+            print(f'\nYou have added {courier} to your couriers\n')
+        input('Press enter to continue')
+    # allows user to update the name of a courier in the list
+    elif option == '3':
+        clear_screen()
+        if couriers != []:
+            couriers_list_index(couriers)
+            try:
+                courier_index = int(input('Enter index of courier you would like to update\n> ').strip())
+                courier_old_name = couriers[courier_index]
+                courier_new_name = input('\nEnter new name of courier\n> ').lower().strip()
+                if courier_new_name in couriers:
+                    print('\nThis name already exits in your list\n')
+                else:
+                    couriers[courier_index] = courier_new_name
+                    print(f'\n{courier_old_name} has been replaced with {courier_new_name}\n')
+                input('Press enter to continue')
+            except:
+                print('\nPLease enter valid input\n')
+                input('Press enter to continue')
+        else:
+            print('\nYou do not have any couriers to update\n')
+            input('Press enter to continue')
+    # allows user to delete a courier from the list
+    elif option == '4':
+        clear_screen()
+        if couriers != []:
+            couriers_list_index(couriers)
+            try:
+                courier_index = int(input('Enter index of courier you would like to remove\n> ').strip())
+                clear_screen()
+                courier_order = []
+                for i in range(len(orders)):
+                    if orders[i]["courier index"] == courier_index:
+                        courier_order.append(i)
+                while True:
+                    choice = input(f'''This courier is currently active in {len(courier_order)} orders
+Therefore please pick what you would like to do:
+Enter 1 to delete the courier and delete all orders associated with it
+Enter 2 to delete the courier and change the courier of all the associated couriers
+Enter 3 to not delete the courier
+> ''')
+                    if choice == '1':
+                        clear_screen()
+                        courier_name = couriers[courier_index]
+                        couriers.pop(courier_index)
+                        print(f'\n{courier_name} has been removed from your couriers\n')
+                        for i in courier_order:
+                            orders.pop(i)
+                        break
+                    elif choice =='2':
+                        clear_screen()
+                        courier_name = couriers[courier_index]
+                        couriers.pop(courier_index)
+                        print(f'\n{courier_name} has been removed from your couriers\n')
+                        for i in courier_order:
+                            print(f'order to change: {orders[i]}')
+                            couriers_list_index(couriers)
+                            cour = int(input('\nWhich courier index would you like to switch to\n> '))
+                            orders[i]["courier index"] = cour
+                            clear_screen()
+                        break
+
+                    elif choice =='3':
+                        break
+
+
+                    
+                
+            except:
+                print('\nYou have not entered a valid index\n')
+        else:
+            print('\nYou do not have any couriers to delete\n')
+        input('Press enter to continue')
+    # allows user to go back to previous menu
+    elif option == '0':
+        return False
+
+    # keeps the loop running
+    return True
+
+
+
+
+def order_menu_func(orders,status_list,couriers):
     clear_screen()
     option = input(order_menu_text).strip()
     if option == '1':
@@ -135,18 +259,25 @@ def order_menu_func(orders,status_list):
     elif option == '2':
         clear_screen()
         try:
-            name = input('Enter customer name\n> ')
-            address = input('\nEnter customer address\n> ')
-            phone_no = input('\nEnter customer phone number\n>')
-            status = 'PREPARING'
-            new_order = {
-                "customer_name": name,
-                "customer_address": address,
-                "customer_phone": phone_no,
-                "status": status,
-                "order-time":time.asctime( time.localtime(time.time()) )
-            }
-            orders.append(new_order)
+            if couriers != []:
+                couriers_list_index(couriers)
+                courier_index = int(input('Enter the index of the courier for this order\n> '))
+                name = input('Enter customer name\n> ')
+                address = input('\nEnter customer address\n> ')
+                phone_no = input('\nEnter customer phone number\n> ')
+                status = 'PREPARING'
+                new_order = {
+                    "customer_name": name,
+                    "customer_address": address,
+                    "customer_phone": phone_no,
+                    "courier index": courier_index,
+                    "status": status,
+                    "order-time":time.asctime( time.localtime(time.time()) )
+                }
+                orders.append(new_order)
+            else:
+                print('You have no avalible couriers and therefore can not create an order\n')
+                input('Press enter to continue')
         except:
             print('\nYou have not entered a valid input\n')
             input('Press enter to continue')
@@ -215,6 +346,9 @@ while run:
         product_menu = True
         clear_screen()
     elif to_continue == '2':
+        courier_menu = True
+        clear_screen()
+    elif to_continue == '3':
         order_menu = True
         clear_screen()
     # runs production menu function
@@ -223,14 +357,22 @@ while run:
         if not(cont):
             product_menu = False
     while order_menu:
-        cont = order_menu_func(orders,status_list)
+        cont = order_menu_func(orders,status_list,couriers)
         if not(cont):
             order_menu = False
+    while courier_menu:
+        cont = courier_menu_func(couriers,orders)
+        if not(cont):
+            courier_menu = False
 
 with open('orders.json',mode='w') as file:
-    to_file = json.dumps(orders)
+    to_file = json.dumps(orders,indent='    ')
     file.write(to_file)
 
 with open('products.json',mode='w') as product_file:
     to_file = json.dumps(products)
     product_file.write(to_file)
+
+with open('couriers.json',mode='w') as couriers_file:
+    to_file = json.dumps(couriers)
+    couriers_file.write(to_file)
