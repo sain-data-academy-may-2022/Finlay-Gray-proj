@@ -197,19 +197,29 @@ def courier_menu_func(couriers,orders):
                 for i in range(len(orders)):
                     if orders[i]["courier index"] == courier_index:
                         courier_order.append(i)
+                print(f'this is the courier order list {courier_order}')
                 while True:
                     choice = input(f'''This courier is currently active in {len(courier_order)} orders
+
 Therefore please pick what you would like to do:
+
 Enter 1 to delete the courier and delete all orders associated with it
+
 Enter 2 to delete the courier and change the courier of all the associated couriers
+
 Enter 3 to not delete the courier
 > ''')
+
+                    # IMPORTANT
+                    # the order list is updating so I AM DELETING THE WRONG INDEXES AFTER THE FIRST ONW.
+                    # now need to fix the other indexes from unrelated orders if removed courier is bedore 
+                    # step through see if index greater then removed index and if so minus 1
                     if choice == '1':
                         clear_screen()
                         courier_name = couriers[courier_index]
                         couriers.pop(courier_index)
                         print(f'\n{courier_name} has been removed from your couriers\n')
-                        for i in courier_order:
+                        for i in courier_order[::-1]:
                             orders.pop(i)
                         break
                     elif choice =='2':
