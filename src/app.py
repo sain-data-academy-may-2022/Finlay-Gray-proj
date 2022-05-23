@@ -75,15 +75,15 @@ while run:
         all_functions.clear_screen()
     # runs production menu function
     while product_menu:
-        cont = all_functions.product_menu_func(products,product_menu_text)
+        cont, products = all_functions.product_menu_func(products,product_menu_text)
         if not(cont):
             product_menu = False
     while order_menu:
-        cont = all_functions.order_menu_func(orders,status_list,couriers,order_menu_text)
+        cont,orders,couriers = all_functions.order_menu_func(orders,status_list,couriers,order_menu_text)
         if not(cont):
             order_menu = False
     while courier_menu:
-        cont = all_functions.courier_menu_func(couriers,orders,courier_menu_text)
+        cont,couriers,orders = all_functions.courier_menu_func(couriers,orders,courier_menu_text)
         if not(cont):
             courier_menu = False
 

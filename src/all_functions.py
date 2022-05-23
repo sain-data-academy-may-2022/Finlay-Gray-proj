@@ -1,6 +1,8 @@
+# imports
 import os
 import time
 
+# clearing the terminal function
 def clear_screen():
     os.system('clear')
 
@@ -9,21 +11,24 @@ def product_list_index(list):
     for i in range(len(list)):
         print(f'Product name: {list[i]}\nIndex value: {i}\n')
 
+
 def orders_list_index(list):
     for i in range(len(list)):
         print(f'Order: {list[i]}\nIndex value: {i}\n')
+
 
 def status_list_index(list):
     for i in range(len(list)):
         print(f'Status: {list[i]}\nIndex value: {i}\n')
 
+
 def couriers_list_index(list):
     for i in range(len(list)):
         print(f'Courier: {list[i]}\nIndex value: {i}\n')
-    
+
 
 # function that handles the product menu
-def product_menu_func(products,product_menu_text):
+def product_menu_func(products, product_menu_text):
     clear_screen()
     option = input(product_menu_text).strip()
     # prints product list
@@ -37,7 +42,8 @@ def product_menu_func(products,product_menu_text):
     # allows user to add a product to the list
     elif option == '2':
         clear_screen()
-        product = input('Enter the name of the product you would like to add\n> ').lower().strip()
+        product = input(
+            'Enter the name of the product you would like to add\n> ').lower().strip()
         if product in products:
             print(f'\nThis product already exists in your list\n')
         else:
@@ -50,14 +56,17 @@ def product_menu_func(products,product_menu_text):
         if products != []:
             product_list_index(products)
             try:
-                product_index = int(input('Enter index of product you would like to update\n> ').strip())
+                product_index = int(
+                    input('Enter index of product you would like to update\n> ').strip())
                 product_old_name = products[product_index]
-                product_new_name = input('\nEnter new name of product\n> ').lower().strip()
+                product_new_name = input(
+                    '\nEnter new name of product\n> ').lower().strip()
                 if product_new_name in products:
                     print('\nThis name already exits in your list\n')
                 else:
                     products[product_index] = product_new_name
-                    print(f'\n{product_old_name} has been replaced with {product_new_name}\n')
+                    print(
+                        f'\n{product_old_name} has been replaced with {product_new_name}\n')
                 input('Press enter to continue')
             except:
                 print('\nPLease enter valid input\n')
@@ -71,7 +80,8 @@ def product_menu_func(products,product_menu_text):
         if products != []:
             product_list_index(products)
             try:
-                product_index = int(input('Enter index of product you would like to remove\n> ').strip())
+                product_index = int(
+                    input('Enter index of product you would like to remove\n> ').strip())
                 product_name = products[product_index]
                 products.pop(product_index)
                 print(f'\n{product_name} has been removed from your products\n')
@@ -82,13 +92,13 @@ def product_menu_func(products,product_menu_text):
         input('Press enter to continue')
     # allows user to go back to previous menu
     elif option == '0':
-        return False
+        return False, products
 
     # keeps the loop running
-    return True
+    return True, products
 
 
-def courier_menu_func(couriers,orders,courier_menu_text):
+def courier_menu_func(couriers, orders, courier_menu_text):
     clear_screen()
     option = input(courier_menu_text).strip()
     # prints courier list
@@ -102,7 +112,8 @@ def courier_menu_func(couriers,orders,courier_menu_text):
     # allows user to add a courier to the list
     elif option == '2':
         clear_screen()
-        courier = input('Enter the name of the courier you would like to add\n> ').lower().strip()
+        courier = input(
+            'Enter the name of the courier you would like to add\n> ').lower().strip()
         if courier in couriers:
             print(f'\nThis courier already exists in your list\n')
         else:
@@ -115,14 +126,17 @@ def courier_menu_func(couriers,orders,courier_menu_text):
         if couriers != []:
             couriers_list_index(couriers)
             try:
-                courier_index = int(input('Enter index of courier you would like to update\n> ').strip())
+                courier_index = int(
+                    input('Enter index of courier you would like to update\n> ').strip())
                 courier_old_name = couriers[courier_index]
-                courier_new_name = input('\nEnter new name of courier\n> ').lower().strip()
+                courier_new_name = input(
+                    '\nEnter new name of courier\n> ').lower().strip()
                 if courier_new_name in couriers:
                     print('\nThis name already exits in your list\n')
                 else:
                     couriers[courier_index] = courier_new_name
-                    print(f'\n{courier_old_name} has been replaced with {courier_new_name}\n')
+                    print(
+                        f'\n{courier_old_name} has been replaced with {courier_new_name}\n')
                 input('Press enter to continue')
             except:
                 print('\nPLease enter valid input\n')
@@ -136,7 +150,8 @@ def courier_menu_func(couriers,orders,courier_menu_text):
         if couriers != []:
             couriers_list_index(couriers)
             try:
-                courier_index = int(input('Enter index of courier you would like to remove\n> ').strip())
+                courier_index = int(
+                    input('Enter index of courier you would like to remove\n> ').strip())
                 clear_screen()
                 courier_order = []
                 for i in range(len(orders)):
@@ -157,35 +172,35 @@ Enter 3 to not delete the courier
 
                     # IMPORTANT
                     # the order list is updating so I AM DELETING THE WRONG INDEXES AFTER THE FIRST ONW.
-                    # now need to fix the other indexes from unrelated orders if removed courier is bedore 
+                    # now need to fix the other indexes from unrelated orders if removed courier is bedore
                     # step through see if index greater then removed index and if so minus 1
                     if choice == '1':
                         clear_screen()
                         courier_name = couriers[courier_index]
                         couriers.pop(courier_index)
-                        print(f'\n{courier_name} has been removed from your couriers\n')
+                        print(
+                            f'\n{courier_name} has been removed from your couriers\n')
                         for i in courier_order[::-1]:
                             orders.pop(i)
                         break
-                    elif choice =='2':
+                    elif choice == '2':
                         clear_screen()
                         courier_name = couriers[courier_index]
                         couriers.pop(courier_index)
-                        print(f'\n{courier_name} has been removed from your couriers\n')
+                        print(
+                            f'\n{courier_name} has been removed from your couriers\n')
                         for i in courier_order:
                             print(f'order to change: {orders[i]}')
                             couriers_list_index(couriers)
-                            cour = int(input('\nWhich courier index would you like to switch to\n> '))
+                            cour = int(
+                                input('\nWhich courier index would you like to switch to\n> '))
                             orders[i]["courier index"] = cour
                             clear_screen()
                         break
 
-                    elif choice =='3':
+                    elif choice == '3':
                         break
 
-
-                    
-                
             except:
                 print('\nYou have not entered a valid index\n')
         else:
@@ -193,15 +208,13 @@ Enter 3 to not delete the courier
         input('Press enter to continue')
     # allows user to go back to previous menu
     elif option == '0':
-        return False
+        return False,couriers,orders
 
     # keeps the loop running
-    return True
+    return True,couriers,orders
 
 
-
-
-def order_menu_func(orders,status_list,couriers,order_menu_text):
+def order_menu_func(orders, status_list, couriers, order_menu_text):
     clear_screen()
     option = input(order_menu_text).strip()
     if option == '1':
@@ -216,7 +229,8 @@ def order_menu_func(orders,status_list,couriers,order_menu_text):
         try:
             if couriers != []:
                 couriers_list_index(couriers)
-                courier_index = int(input('Enter the index of the courier for this order\n> '))
+                courier_index = int(
+                    input('Enter the index of the courier for this order\n> '))
                 name = input('Enter customer name\n> ')
                 address = input('\nEnter customer address\n> ')
                 phone_no = input('\nEnter customer phone number\n> ')
@@ -227,11 +241,12 @@ def order_menu_func(orders,status_list,couriers,order_menu_text):
                     "customer_phone": phone_no,
                     "courier index": courier_index,
                     "status": status,
-                    "order-time":time.asctime( time.localtime(time.time()) )
+                    "order-time": time.asctime(time.localtime(time.time()))
                 }
                 orders.append(new_order)
             else:
-                print('You have no avalible couriers and therefore can not create an order\n')
+                print(
+                    'You have no avalible couriers and therefore can not create an order\n')
                 input('Press enter to continue')
         except:
             print('\nYou have not entered a valid input\n')
@@ -241,14 +256,16 @@ def order_menu_func(orders,status_list,couriers,order_menu_text):
         if orders != []:
             orders_list_index(orders)
             try:
-                order_to_update = int(input('Enter the index of the order status you would like to update\n> '))
+                order_to_update = int(
+                    input('Enter the index of the order status you would like to update\n> '))
                 clear_screen()
                 status_list_index(status_list)
-                status_index = int(input('Enter the index of the status you would like to update to\n> '))
+                status_index = int(
+                    input('Enter the index of the status you would like to update to\n> '))
                 orders[order_to_update]["status"] = status_list[status_index]
             except:
                 print('\nYou have not entered a valid input\n')
-                
+
         else:
             print('You do not have any orders in your order list\n')
         input('Press enter to continue')
@@ -257,11 +274,13 @@ def order_menu_func(orders,status_list,couriers,order_menu_text):
         if orders != []:
             orders_list_index(orders)
             try:
-                order_to_update = int(input('Enter the index of the order status you would like to update\n> '))
-                for key,value in orders[order_to_update].items():
+                order_to_update = int(
+                    input('Enter the index of the order status you would like to update\n> '))
+                for key, value in orders[order_to_update].items():
                     if key == "status" or key == "order-time":
                         continue
-                    yes_or_no = input(f'Do you want to update the {key} from {value}? (y/n)\n> ')
+                    yes_or_no = input(
+                        f'Do you want to update the {key} from {value}? (y/n)\n> ')
                     if yes_or_no == 'y':
                         new_value = input('Enter new value\n> ')
                         orders[order_to_update][key] = new_value
@@ -277,7 +296,8 @@ def order_menu_func(orders,status_list,couriers,order_menu_text):
         if orders != []:
             orders_list_index(orders)
             try:
-                to_delete = int(input('Enter the index of the order you would like to delete\n> '))
+                to_delete = int(
+                    input('Enter the index of the order you would like to delete\n> '))
                 orders.pop(to_delete)
             except:
                 print('\nYou have not entered a valid input\n')
@@ -286,7 +306,6 @@ def order_menu_func(orders,status_list,couriers,order_menu_text):
         input('Press enter to continue')
 
     elif option == '0':
-        return False
-    
+        return False,orders,couriers
 
-    return True
+    return True,orders,couriers
