@@ -9,7 +9,7 @@ try:
 except:
     products = []
 try:
-    with open('orders.json','r') as file:
+    with open('orders.json', 'r') as file:
         orders = json.load(file)
 except:
     orders = []
@@ -47,17 +47,17 @@ Enter 4 to update an existing order
 Enter 5 to delete an order
 Enter 0 to return to main menu
 > '''
-courier_menu_text= '''Enter 1 to view courier list
+courier_menu_text = '''Enter 1 to view courier list
 Enter 2 to create a new courier
 Enter 3 to update current courier
 Enter 4 to delete a courier
 Enter 0 to return to main menu 
 '''
 
-status_list = ['PREPARING','QUALITY CHECK','OUT FOR DELIVERY','DELIVERED']
+status_list = ['PREPARING', 'QUALITY CHECK', 'OUT FOR DELIVERY', 'DELIVERED']
 # function that prints out product list with corresponding index
 
-    
+
 # main loop
 while run:
     all_functions.clear_screen()
@@ -75,26 +75,29 @@ while run:
         all_functions.clear_screen()
     # runs production menu function
     while product_menu:
-        cont, products = all_functions.product_menu_func(products,product_menu_text)
+        cont, products = all_functions.product_menu_func(
+            products, product_menu_text)
         if not(cont):
             product_menu = False
     while order_menu:
-        cont,orders,couriers = all_functions.order_menu_func(orders,status_list,couriers,order_menu_text)
+        cont, orders, couriers = all_functions.order_menu_func(
+            orders, status_list, couriers, order_menu_text)
         if not(cont):
             order_menu = False
     while courier_menu:
-        cont,couriers,orders = all_functions.courier_menu_func(couriers,orders,courier_menu_text)
+        cont, couriers, orders = all_functions.courier_menu_func(
+            couriers, orders, courier_menu_text)
         if not(cont):
             courier_menu = False
 
-with open('orders.json',mode='w') as file:
-    to_file = json.dumps(orders,indent='    ')
+with open('orders.json', mode='w') as file:
+    to_file = json.dumps(orders, indent='    ')
     file.write(to_file)
 
-with open('products.json',mode='w') as product_file:
+with open('products.json', mode='w') as product_file:
     to_file = json.dumps(products)
     product_file.write(to_file)
 
-with open('couriers.json',mode='w') as couriers_file:
+with open('couriers.json', mode='w') as couriers_file:
     to_file = json.dumps(couriers)
     couriers_file.write(to_file)
