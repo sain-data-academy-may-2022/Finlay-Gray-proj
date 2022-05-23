@@ -52,7 +52,7 @@ Enter 2 to create a new courier
 Enter 3 to update current courier
 Enter 4 to delete a courier
 Enter 0 to return to main menu 
-'''
+> '''
 
 status_list = ['PREPARING', 'QUALITY CHECK', 'OUT FOR DELIVERY', 'DELIVERED']
 # function that prints out product list with corresponding index

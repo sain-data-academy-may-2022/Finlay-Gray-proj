@@ -274,7 +274,9 @@ def courier_menu_func(couriers, orders, courier_menu_text):
                 for i in range(len(orders)):
                     if orders[i]["courier index"] == courier_index:
                         courier_order.append(i)
-                print(f'this is the courier order list {courier_order}')
+                    elif orders[i]["courier index"] > courier_index:
+                        orders[i]["courier index"] -= 1
+                
                 while True:
                     choice = input(f'''This courier is currently active in {len(courier_order)} orders
 
