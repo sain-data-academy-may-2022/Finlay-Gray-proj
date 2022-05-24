@@ -108,19 +108,24 @@ def add_orders(orders,couriers):
             couriers_list_index(couriers)
             courier_index = int(
                 input('Enter the index of the courier for this order\n> '))
-            name = input('Enter customer name\n> ')
-            address = input('\nEnter customer address\n> ')
-            phone_no = input('\nEnter customer phone number\n> ')
-            status = 'PREPARING'
-            new_order = {
-                "customer_name": name,
-                "customer_address": address,
-                "customer_phone": phone_no,
-                "courier index": courier_index,
-                "status": status,
-                "order-time": time.asctime(time.localtime(time.time()))
-            }
-            orders.append(new_order)
+            try:
+                a = couriers[courier_index]
+                name = input('Enter customer name\n> ')
+                address = input('\nEnter customer address\n> ')
+                phone_no = input('\nEnter customer phone number\n> ')
+                status = 'PREPARING'
+                new_order = {
+                    "customer_name": name,
+                    "customer_address": address,
+                    "customer_phone": phone_no,
+                    "courier index": courier_index,
+                    "status": status,
+                    "order-time": time.asctime(time.localtime(time.time()))
+                }
+                orders.append(new_order)
+
+            except:
+                3/0
         else:
             print(
                 'You have no avalible couriers and therefore can not create an order\n')
@@ -289,10 +294,6 @@ Enter 2 to delete the courier and change the courier of all the associated couri
 Enter 3 to not delete the courier
 > ''')
 
-                    # IMPORTANT
-                    # the order list is updating so I AM DELETING THE WRONG INDEXES AFTER THE FIRST ONW.
-                    # now need to fix the other indexes from unrelated orders if removed courier is bedore
-                    # step through see if index greater then removed index and if so minus 1
                     if choice == '1':
                         clear_screen()
                         courier_name = couriers[courier_index]
