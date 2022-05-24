@@ -28,6 +28,7 @@ def couriers_list_index(list):
     for i in range(len(list)):
         print(f'Courier: {list[i]}\nIndex value: {i}\n')
 
+
 def update_products(products):
     clear_screen()
     if products != []:
@@ -51,8 +52,9 @@ def update_products(products):
     else:
         print('\nYou do not have any products to update\n')
         input('Press enter to continue')
-    
+
     return products
+
 
 def delete_products(products):
     clear_screen()
@@ -72,6 +74,7 @@ def delete_products(products):
 
     return products
 
+
 def add_products(products):
     clear_screen()
     product = input(
@@ -85,6 +88,7 @@ def add_products(products):
 
     return products
 
+
 def view_products(products):
     clear_screen()
     if products == []:
@@ -93,6 +97,7 @@ def view_products(products):
         product_list_index(products)
     input('Press enter to continue')
 
+
 def view_orders(orders):
     clear_screen()
     if orders == []:
@@ -100,8 +105,9 @@ def view_orders(orders):
     else:
         orders_list_index(orders)
     input('Press enter to continue')
-    
-def add_orders(orders,couriers):
+
+
+def add_orders(orders, couriers):
     clear_screen()
     try:
         if couriers != []:
@@ -113,6 +119,9 @@ def add_orders(orders,couriers):
                 name = input('Enter customer name\n> ')
                 address = input('\nEnter customer address\n> ')
                 phone_no = input('\nEnter customer phone number\n> ')
+                if len(phone_no) < 10:
+                    print('\nYour phone number must be at least 10 digits long\n')
+                    3/0
                 status = 'PREPARING'
                 new_order = {
                     "customer_name": name,
@@ -136,7 +145,8 @@ def add_orders(orders,couriers):
 
     return orders
 
-def update_order_status(orders,status_list):
+
+def update_order_status(orders, status_list):
     clear_screen()
     if orders != []:
         orders_list_index(orders)
@@ -156,6 +166,7 @@ def update_order_status(orders,status_list):
     input('Press enter to continue')
 
     return orders
+
 
 def update_order(orders):
     clear_screen()
@@ -181,6 +192,7 @@ def update_order(orders):
     input('Press enter to continue')
     return orders
 
+
 def delete_order(orders):
     clear_screen()
     if orders != []:
@@ -197,6 +209,8 @@ def delete_order(orders):
     return orders
 
 # function that handles the product menu
+
+
 def product_menu_func(products, product_menu_text):
     clear_screen()
     option = input(product_menu_text).strip()
@@ -281,7 +295,7 @@ def courier_menu_func(couriers, orders, courier_menu_text):
                         courier_order.append(i)
                     elif orders[i]["courier index"] > courier_index:
                         orders[i]["courier index"] -= 1
-                
+
                 while True:
                     choice = input(f'''This courier is currently active in {len(courier_order)} orders
 
@@ -319,6 +333,9 @@ Enter 3 to not delete the courier
                         break
 
                     elif choice == '3':
+                        for i in range(len(orders)):
+                            if orders[i]["courier index"] > courier_index:
+                                orders[i]["courier index"] += 1
                         break
 
             except:
@@ -340,9 +357,9 @@ def order_menu_func(orders, status_list, couriers, order_menu_text):
     if option == '1':
         view_orders(orders)
     elif option == '2':
-        orders = add_orders(orders,couriers)
+        orders = add_orders(orders, couriers)
     elif option == '3':
-        orders = update_order_status(orders,status_list)
+        orders = update_order_status(orders, status_list)
     elif option == '4':
         orders = update_order(orders)
     elif option == '5':
