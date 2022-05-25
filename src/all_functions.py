@@ -8,7 +8,7 @@ import time
 def clear_screen():
     os.system('clear')
 
-
+# all lost index functions print list with index to screen
 def product_list_index(list):
     for i in range(len(list)):
         print(f'Product name: {list[i]}\nIndex value: {i}\n')
@@ -118,10 +118,12 @@ def add_orders(orders, couriers):
                 input('Enter the index of the courier for this order\n> '))
             try:
                 a = couriers[courier_index]
+                clear_screen()
                 name = input('Enter customer name\n> ')
                 address = input('\nEnter customer address\n> ')
                 phone_no = input('\nEnter customer phone number\n> ')
                 if len(phone_no) < 10:
+                    clear_screen()
                     print('\nYour phone number must be at least 10 digits long\n')
                     3/0
                 status = 'PREPARING'
@@ -170,19 +172,26 @@ def update_order_status(orders, status_list):
     return orders
 
 
-def update_order(orders):
+def update_order(orders,couriers):
     clear_screen()
     if orders != []:
         orders_list_index(orders)
         try:
             order_to_update = int(
                 input('Enter the index of the order status you would like to update\n> '))
+            clear_screen()
             for key, value in orders[order_to_update].items():
                 if key == "status" or key == "order-time":
                     continue
                 yes_or_no = input(
-                    f'Do you want to update the {key} from {value}? (y/n)\n> ')
-                if yes_or_no == 'y':
+                    f'Do you want to update the {key} from {value}? (y/n)\n> ').strip().lower()
+                if key == "courier index" and yes_or_no == 'y':
+                    clear_screen()
+                    print(couriers_list_index(couriers))
+                    index = int(input('\nEnter the index of the new courier\n> '))
+                    orders[order_to_update][key] = index
+                    continue
+                elif yes_or_no == 'y':
                     new_value = input('Enter new value\n> ')
                     orders[order_to_update][key] = new_value
                 else:
@@ -209,6 +218,37 @@ def delete_order(orders):
         print('You do not have any orders in your order list\n')
     input('Press enter to continue')
     return orders
+
+
+def view_courier(couriers):
+    clear_screen()
+    if couriers == []:
+        print('There are no couriers in your list!\n')
+    else:
+        couriers_list_index(couriers)
+    input('Press enter to continue')
+
+def add_courier(couriers):
+    clear_screen()
+    courier = input(
+        'Enter the name of the courier you would like to add\n> ').lower().strip()
+    if courier in couriers:
+        print(f'\nThis courier already exists in your list\n')
+    else:
+        couriers.append(courier)
+        print(f'\nYou have added {courier} to your couriers\n')
+    input('Press enter to continue')
+
+    return couriers
+
+
+
+
+
+
+
+
+
 
 # function that handles the product menu
 
@@ -241,23 +281,10 @@ def courier_menu_func(couriers, orders, courier_menu_text):
     option = input(courier_menu_text).strip()
     # prints courier list
     if option == '1':
-        clear_screen()
-        if couriers == []:
-            print('There are no couriers in your list!\n')
-        else:
-            couriers_list_index(couriers)
-        input('Press enter to continue')
+        view_courier(couriers)
     # allows user to add a courier to the list
     elif option == '2':
-        clear_screen()
-        courier = input(
-            'Enter the name of the courier you would like to add\n> ').lower().strip()
-        if courier in couriers:
-            print(f'\nThis courier already exists in your list\n')
-        else:
-            couriers.append(courier)
-            print(f'\nYou have added {courier} to your couriers\n')
-        input('Press enter to continue')
+        couriers = add_courier(couriers)
     # allows user to update the name of a courier in the list
     elif option == '3':
         clear_screen()
@@ -336,7 +363,7 @@ Enter 3 to not delete the courier
 
                     elif choice == '3':
                         for i in range(len(orders)):
-                            if orders[i]["courier index"] > courier_index:
+                            if orders[i]["courier index"] >= courier_index:
                                 orders[i]["courier index"] += 1
                         break
 
@@ -363,7 +390,7 @@ def order_menu_func(orders, status_list, couriers, order_menu_text):
     elif option == '3':
         orders = update_order_status(orders, status_list)
     elif option == '4':
-        orders = update_order(orders)
+        orders = update_order(orders,couriers)
     elif option == '5':
         orders = delete_order(orders)
     elif option == '0':
