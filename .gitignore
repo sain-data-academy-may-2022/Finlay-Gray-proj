@@ -1,3 +1,5 @@
 hello.py
 *.jpg
 *.venv
+*.json
+git_func.py
