@@ -81,6 +81,8 @@ def add_products(products):
         'Enter the name of the product you would like to add\n> ').lower().strip()
     if product in products:
         print(f'\nThis product already exists in your list\n')
+    elif product == ''.strip():
+        print(f'\nYou have not entered a valid input\n')
     else:
         products.append(product)
         print(f'\nYou have added {product} to your products\n')
