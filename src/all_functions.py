@@ -9,9 +9,39 @@ def clear_screen():
     os.system('clear')
 
 # all lost index functions print list with index to screen
+class Product:
+    def __init__(self,price,quantity,name):
+        self.price = price 
+        self.quantity = quantity
+        self.name = name
+
+    
+    def price_change(self,new_price):
+        self.price = new_price
+
+    def quantity_subtract(self,to_take_off):
+        self.quantity -= to_take_off
+
+    def quantity_add(self,to_add):
+        self.quantity += to_add
+    
+    def name_change(self,new_name):
+        self.name = new_name
+        
+    
+    def can_order(self,no_to_order):
+        if self.quantity > 0 and self.quantity > no_to_order:
+            return True
+        else:
+            return False
+
+
+
+
+
 def product_list_index(list):
     for i in range(len(list)):
-        print(f'Product name: {list[i]}\nIndex value: {i}\n')
+        print(f'Product name: {list[i].name}\nPrice: £{list[i].price}\nQuantity: {list[i].quantity}\nIndex value: {i}\n')
 
 
 def orders_list_index(list):
@@ -29,26 +59,69 @@ def couriers_list_index(list):
         print(f'Courier: {list[i]}\nIndex value: {i}\n')
 
 
-def update_products(products):
+def update_products(products,prod_update_menu_text):
     clear_screen()
     if products != []:
-        product_list_index(products)
-        try:
-            product_index = int(
-                input('Enter index of product you would like to update\n> ').strip())
-            product_old_name = products[product_index]
-            product_new_name = input(
-                '\nEnter new name of product\n> ').lower().strip()
-            if product_new_name in products:
-                print('\nThis name already exits in your list\n')
-            else:
-                products[product_index] = product_new_name
-                print(
-                    f'\n{product_old_name} has been replaced with {product_new_name}\n')
-            input('Press enter to continue')
-        except:
-            print('\nPLease enter valid input\n')
-            input('Press enter to continue')
+        while True:
+            clear_screen()
+            choice = input(prod_update_menu_text)
+            if choice == '0':
+                break
+            elif choice == '1':
+                clear_screen()
+                product_list_index(products)
+                try:
+                    product_index = int(
+                        input('Enter index of product you would like to update\n> ').strip())
+                    product_old_name = products[product_index].name
+                    product_new_name = input(
+                        '\nEnter new name of product\n> ').lower().strip()
+                    # if product_new_name in products.name:
+                    #     print('\nThis name already exits in your list\n')
+                    # else:
+                    products[product_index].name_change(product_new_name)
+                    print(
+                        f'\n{product_old_name} has been replaced with {product_new_name}\n')
+                    input('Press enter to continue')
+                except:
+                    print('\nPLease enter valid input\n')
+                    input('Press enter to continue')
+
+            elif choice == '2':
+                clear_screen()
+                product_list_index(products)
+                try:
+                    product_index = int(
+                        input('Enter index of product you would like to update\n> ').strip())
+                    product_old_price = products[product_index].price
+                    product_new_price = input(
+                        '\nEnter new price of product\n> ').lower().strip()
+                    products[product_index].price_change(product_new_price)
+                    print(
+                        f'\n{product_old_price} has been replaced with {product_new_price}\n')
+                    input('Press enter to continue')
+                except:
+                    print('\nPLease enter valid input\n')
+                    input('Press enter to continue')
+
+            elif choice == '3':
+                clear_screen()
+                product_list_index(products)
+                try:
+                    product_index = int(
+                        input('Enter index of product you would like to update\n> ').strip())
+                    product_old_quantity = products[product_index].quantity
+                    quantity_to_add = int(input(
+                        '\nEnter how much you would like to increase the quantity by\n> ').lower().strip())
+                    products[product_index].quantity_add(quantity_to_add)
+                    print(
+                        f'\n{product_old_quantity} has been replaced with {products[product_index].quantity}\n')
+                    input('Press enter to continue')
+                except:
+                    print('\nPLease enter valid input\n')
+                    input('Press enter to continue')
+
+                
     else:
         print('\nYou do not have any products to update\n')
         input('Press enter to continue')
@@ -77,14 +150,16 @@ def delete_products(products):
 
 def add_products(products):
     clear_screen()
-    product = input(
-        'Enter the name of the product you would like to add\n> ').lower().strip()
+    product = input('Enter the name of the product you would like to add\n> ').lower().strip()
+    product_price = float(input('Enter the price of this product\n> ').lower().strip())
+    product_quantity = int(input('Enter the quantity of this product you have\n> ').strip())
     if product in products:
         print(f'\nThis product already exists in your list\n')
     elif product == ''.strip():
         print(f'\nYou have not entered a valid input\n')
     else:
-        products.append(product)
+        new_product = Product(product_price,product_quantity,product)
+        products.append(new_product)
         print(f'\nYou have added {product} to your products\n')
     input('Press enter to continue')
 
@@ -336,7 +411,7 @@ Enter 3 to not delete the courier
 # function that handles the product menu
 
 
-def product_menu_func(products, product_menu_text):
+def product_menu_func(products, product_menu_text,prod_update_menu_text):
     clear_screen()
     option = input(product_menu_text).strip()
     # prints product list
@@ -347,7 +422,7 @@ def product_menu_func(products, product_menu_text):
         products = add_products(products)
     # allows user to update the name of a product in the list
     elif option == '3':
-        products = update_products(products)
+        products = update_products(products,prod_update_menu_text)
     # allows user to delete a product from the list
     elif option == '4':
         products = delete_products(products)

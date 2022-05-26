@@ -172,7 +172,7 @@ def product_menu_func(products):
     elif option == '2':
         product = input('Enter the name of the product you would like to add\n> ').lower().strip()
         product_price = float(input('Enter the price of this product\n> ').lower().strip())
-        product_quantity = int(input('Enter the number of this product you would like to add\n> '))
+        product_quantity = int(input('Enter the quantity of this product you have\n> ').strip())
         if product in products:
             print(f'\nThis product already exists in your list\n')
         else:
