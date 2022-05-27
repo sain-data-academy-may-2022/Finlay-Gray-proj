@@ -1,1 +1,26 @@
-[]
+[
+    {
+        "customer_name": "finlay",
+        "customer_address": "21 burgoyne road",
+        "customer_phone": "07455469158",
+        "courier index": 1,
+        "status": "PREPARING",
+        "order-time": "Fri May 27 09:41:29 2022"
+    },
+    {
+        "customer_name": "connor",
+        "customer_address": "grave road",
+        "customer_phone": "234323465444",
+        "courier index": 1,
+        "status": "PREPARING",
+        "order-time": "Fri May 27 09:43:26 2022"
+    },
+    {
+        "customer_name": "rurari",
+        "customer_address": "infinity workd",
+        "customer_phone": "016234356543",
+        "courier index": 0,
+        "status": "PREPARING",
+        "order-time": "Fri May 27 09:44:11 2022"
+    }
+]

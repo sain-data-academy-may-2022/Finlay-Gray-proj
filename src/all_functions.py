@@ -93,12 +93,11 @@ def update_products(products,prod_update_menu_text):
                 try:
                     product_index = int(
                         input('Enter index of product you would like to update\n> ').strip())
-                    product_old_price = products[product_index].price
                     product_new_price = input(
                         '\nEnter new price of product\n> ').lower().strip()
                     products[product_index].price_change(product_new_price)
                     print(
-                        f'\n{product_old_price} has been replaced with {product_new_price}\n')
+                        f'\nThe price of {products[product_index].name} has been replaced with £{product_new_price}\n')
                     input('Press enter to continue')
                 except:
                     print('\nPLease enter valid input\n')
@@ -110,12 +109,27 @@ def update_products(products,prod_update_menu_text):
                 try:
                     product_index = int(
                         input('Enter index of product you would like to update\n> ').strip())
-                    product_old_quantity = products[product_index].quantity
                     quantity_to_add = int(input(
                         '\nEnter how much you would like to increase the quantity by\n> ').lower().strip())
                     products[product_index].quantity_add(quantity_to_add)
                     print(
-                        f'\n{product_old_quantity} has been replaced with {products[product_index].quantity}\n')
+                        f'\nThe quantity of {products[product_index].name} has been increased by {quantity_to_add} to become {products[product_index].quantity}\n')
+                    input('Press enter to continue')
+                except:
+                    print('\nPLease enter valid input\n')
+                    input('Press enter to continue')
+
+            elif choice == '4':
+                clear_screen()
+                product_list_index(products)
+                try:
+                    product_index = int(
+                        input('Enter index of product you would like to update\n> ').strip())
+                    quantity_to_sub = int(input(
+                        '\nEnter how much you would like to decrease the quantity by\n> ').lower().strip())
+                    products[product_index].quantity_subtract(quantity_to_sub)
+                    print(
+                        f'\nThe quantity of {products[product_index].name} has been decreased by {quantity_to_sub} to become {products[product_index].quantity}\n')
                     input('Press enter to continue')
                 except:
                     print('\nPLease enter valid input\n')
