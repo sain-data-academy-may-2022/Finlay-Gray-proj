@@ -1,11 +1,15 @@
 # imports
 import json
+from math import prod
 import all_functions
 # this is how you get current time time.asctime( time.localtime(time.time()) )
 # setting up inital variables
+products = []
 try:
     with open('products.json') as product_file:
-        products = json.load(product_file)
+        temp_products = json.load(product_file)
+        for product in temp_products:
+            products.append(all_functions.Product(product['price'],product['quantity'],product['name']))
 except:
     products = []
 try:
@@ -28,7 +32,7 @@ courier_menu = False
 
 
 # setting up menu texts that will show up on screen
-first_menu_text = '''\nWelcome to Gray's Cafe!\n
+first_menu_text = f'''\nWelcome to Gray's Cafe!\n
 Enter 1 to view product menu
 Enter 2 to view courier menu
 Enter 3 to view order menu
@@ -39,6 +43,12 @@ Enter 2 to create a new product
 Enter 3 to update current product
 Enter 4 to delete a product
 Enter 0 to return to main menu 
+> '''
+prod_update_menu_text = '''Enter 1 to update a products name
+Enter 2 to update a products price
+Enter 3 to add to a products quantity
+Enter 4 to subtract from a products quantity
+Enter 0 to return to main menu
 > '''
 order_menu_text = '''Enter 1 to view orders
 Enter 2 to create a new order
@@ -76,7 +86,7 @@ while run:
     # runs production menu function
     while product_menu:
         cont, products = all_functions.product_menu_func(
-            products, product_menu_text)
+            products, product_menu_text,prod_update_menu_text)
         if not(cont):
             product_menu = False
     while order_menu:
@@ -94,9 +104,11 @@ with open('orders.json', mode='w') as file:
     to_file = json.dumps(orders, indent='    ')
     file.write(to_file)
 
-with open('products.json', mode='w') as product_file:
-    to_file = json.dumps(products)
-    product_file.write(to_file)
+def create_json(file_path,list):
+    with open(file_path, "w") as file:
+        json.dump([ob.__dict__ for ob in list], file)
+
+create_json('products.json',products)
 
 with open('couriers.json', mode='w') as couriers_file:
     to_file = json.dumps(couriers)
