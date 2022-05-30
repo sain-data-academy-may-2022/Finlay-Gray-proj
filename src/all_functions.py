@@ -36,7 +36,44 @@ class Product:
             return False
 
 
+class Orders:
+    def __init__(self,name,address,phone_num,status,order_time,courier_index,products_list):
+        self.name = name
+        self.address = address
+        self.phone_num = phone_num
+        self.status = status
+        self.order_time = order_time
+        self.courier_index = courier_index
+        self.products_list = products_list
 
+
+
+
+
+class Couriers:
+    def __init__(self,name,num_services,delivery_fee,orders):
+        self.name = name
+        self.num_services = num_services
+        self.delivery_fee = delivery_fee
+        self.orders = orders
+
+    def name_change(self,new_name):
+        self.name = new_name
+
+    def num_services_add(self, to_add):
+        self.num_services += to_add
+    
+    def num_services_subtract(self, to_sub):
+        self.num_services -= to_sub
+
+        
+class Service(Couriers):
+    def __init__(self, name,orders):
+        super().__init__(name,orders)
+
+    # each service has an order capacity
+    # each servvice has a vehicle 
+    # each service has a average delivery time
 
 
 def product_list_index(list):
@@ -46,7 +83,7 @@ def product_list_index(list):
 
 def orders_list_index(list):
     for i in range(len(list)):
-        print(f'Order: {list[i]}\nIndex value: {i}\n')
+        print(f'Order name: {list[i].name}\nAddress: £{list[i].address}\nPhone_number: {list[i].phone_num}\nIndex value: {i}\n')
 
 
 def status_list_index(list):
@@ -216,14 +253,8 @@ def add_orders(orders, couriers):
                     print('\nYour phone number must be at least 10 digits long\n')
                     3/0
                 status = 'PREPARING'
-                new_order = {
-                    "customer_name": name,
-                    "customer_address": address,
-                    "customer_phone": phone_no,
-                    "courier index": courier_index,
-                    "status": status,
-                    "order-time": time.asctime(time.localtime(time.time()))
-                }
+                new_order = Orders(name,address,phone_no,status,time.asctime(time.localtime(time.time())),courier_index,[]) 
+                
                 orders.append(new_order)
 
             except:
