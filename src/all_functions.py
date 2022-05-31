@@ -9,27 +9,27 @@ def clear_screen():
     os.system('clear')
 
 # all lost index functions print list with index to screen
+
+
 class Product:
-    def __init__(self,price,quantity,name):
-        self.price = price 
+    def __init__(self, price, quantity, name):
+        self.price = price
         self.quantity = quantity
         self.name = name
 
-    
-    def price_change(self,new_price):
+    def price_change(self, new_price):
         self.price = new_price
 
-    def quantity_subtract(self,to_take_off):
+    def quantity_subtract(self, to_take_off):
         self.quantity -= to_take_off
 
-    def quantity_add(self,to_add):
+    def quantity_add(self, to_add):
         self.quantity += to_add
-    
-    def name_change(self,new_name):
+
+    def name_change(self, new_name):
         self.name = new_name
-        
-    
-    def can_order(self,no_to_order):
+
+    def can_order(self, no_to_order):
         if self.quantity > 0 and self.quantity > no_to_order:
             return True
         else:
@@ -37,53 +37,44 @@ class Product:
 
 
 class Orders:
-    def __init__(self,name,address,phone_num,status,order_time,courier_index,products_list):
+    def __init__(self, name, address, phone_num, status, order_time, courier_index, products_list):
         self.name = name
         self.address = address
         self.phone_num = phone_num
         self.status = status
         self.order_time = order_time
-        self.courier_index = courier_index
+        self.courier_index = int(courier_index)
         self.products_list = products_list
 
-
+    def __repr__(self) -> str:
+        return f'Order name: {self.name}\nAddress: {self.address}\nPhone_number: {self.phone_num}\nStatus: {self.status}\nOrder time: {self.order_time}\nCourier index: {self.courier_index}\nProducts in order: {self.products_list}\n'
 
 
 
 class Couriers:
-    def __init__(self,name,num_services,delivery_fee,orders):
+    def __init__(self, name,phone,delivery):
         self.name = name
-        self.num_services = num_services
-        self.delivery_fee = delivery_fee
-        self.orders = orders
+        self.phone = phone
+        self.delivery = delivery
 
-    def name_change(self,new_name):
+    def name_change(self, new_name):
         self.name = new_name
 
-    def num_services_add(self, to_add):
-        self.num_services += to_add
-    
-    def num_services_subtract(self, to_sub):
-        self.num_services -= to_sub
-
-        
-class Service(Couriers):
-    def __init__(self, name,orders):
-        super().__init__(name,orders)
 
     # each service has an order capacity
-    # each servvice has a vehicle 
+    # each servvice has a vehicle
     # each service has a average delivery time
 
 
 def product_list_index(list):
     for i in range(len(list)):
-        print(f'Product name: {list[i].name}\nPrice: £{list[i].price}\nQuantity: {list[i].quantity}\nIndex value: {i}\n')
+        print(
+            f'Product name: {list[i].name}\nPrice: £{list[i].price}\nQuantity: {list[i].quantity}\nIndex value: {i}\n')
 
 
 def orders_list_index(list):
     for i in range(len(list)):
-        print(f'Order name: {list[i].name}\nAddress: £{list[i].address}\nPhone_number: {list[i].phone_num}\nIndex value: {i}\n')
+        print(f'Order name: {list[i].name}\nAddress: {list[i].address}\nPhone_number: {list[i].phone_num}\nStatus: {list[i].status}\nOrder time: {list[i].order_time}\nCourier index: {list[i].courier_index}\nProducts in order: {list[i].products_list}\nIndex value: {i}\n')
 
 
 def status_list_index(list):
@@ -93,10 +84,11 @@ def status_list_index(list):
 
 def couriers_list_index(list):
     for i in range(len(list)):
-        print(f'Courier: {list[i]}\nIndex value: {i}\n')
+        print(
+            f'Courier name: {list[i].name}\nCourier phone number: {list[i].phone}\nCourier vehicle: {list[i].delivery}\nIndex value: {i}\n')
 
 
-def update_products(products,prod_update_menu_text):
+def update_products(products, prod_update_menu_text):
     clear_screen()
     if products != []:
         while True:
@@ -172,7 +164,6 @@ def update_products(products,prod_update_menu_text):
                     print('\nPLease enter valid input\n')
                     input('Press enter to continue')
 
-                
     else:
         print('\nYou do not have any products to update\n')
         input('Press enter to continue')
@@ -201,15 +192,18 @@ def delete_products(products):
 
 def add_products(products):
     clear_screen()
-    product = input('Enter the name of the product you would like to add\n> ').lower().strip()
-    product_price = float(input('Enter the price of this product\n> ').lower().strip())
-    product_quantity = int(input('Enter the quantity of this product you have\n> ').strip())
+    product = input(
+        'Enter the name of the product you would like to add\n> ').lower().strip()
+    product_price = float(
+        input('Enter the price of this product\n> ').lower().strip())
+    product_quantity = int(
+        input('Enter the quantity of this product you have\n> ').strip())
     if product in products:
         print(f'\nThis product already exists in your list\n')
     elif product == ''.strip():
         print(f'\nYou have not entered a valid input\n')
     else:
-        new_product = Product(product_price,product_quantity,product)
+        new_product = Product(product_price, product_quantity, product)
         products.append(new_product)
         print(f'\nYou have added {product} to your products\n')
     input('Press enter to continue')
@@ -253,8 +247,9 @@ def add_orders(orders, couriers):
                     print('\nYour phone number must be at least 10 digits long\n')
                     3/0
                 status = 'PREPARING'
-                new_order = Orders(name,address,phone_no,status,time.asctime(time.localtime(time.time())),courier_index,[]) 
-                
+                new_order = Orders(name, address, phone_no, status, time.asctime(
+                    time.localtime(time.time())), courier_index, [])
+
                 orders.append(new_order)
 
             except:
@@ -281,7 +276,7 @@ def update_order_status(orders, status_list):
             status_list_index(status_list)
             status_index = int(
                 input('Enter the index of the status you would like to update to\n> '))
-            orders[order_to_update]["status"] = status_list[status_index]
+            orders[order_to_update].status = status_list[status_index]
         except:
             print('\nYou have not entered a valid input\n')
 
@@ -292,28 +287,29 @@ def update_order_status(orders, status_list):
     return orders
 
 
-def update_order(orders,couriers):
+def update_order(orders, couriers):
     clear_screen()
     if orders != []:
         orders_list_index(orders)
         try:
             order_to_update = int(
-                input('Enter the index of the order status you would like to update\n> '))
+                input('Enter the index of the order you would like to update\n> '))
             clear_screen()
-            for key, value in orders[order_to_update].items():
-                if key == "status" or key == "order-time":
+            for attribute in vars(orders[order_to_update]):
+                if attribute == "status" or attribute == "order-time":
                     continue
                 yes_or_no = input(
-                    f'Do you want to update the {key} from {value}? (y/n)\n> ').strip().lower()
-                if key == "courier index" and yes_or_no == 'y':
+                    f'Do you want to update the {attribute} from {getattr(orders[order_to_update],attribute)}? (y/n)\n> ').strip().lower()
+                if attribute == "courier_index" and yes_or_no == 'y':
                     clear_screen()
-                    print(couriers_list_index(couriers))
-                    index = int(input('\nEnter the index of the new courier\n> '))
-                    orders[order_to_update][key] = index
+                    couriers_list_index(couriers)
+                    index = int(
+                        input('\nEnter the index of the new courier\n> '))
+                    setattr(orders[order_to_update],attribute,index)
                     continue
                 elif yes_or_no == 'y':
                     new_value = input('Enter new value\n> ')
-                    orders[order_to_update][key] = new_value
+                    setattr(orders[order_to_update],attribute,new_value)
                 else:
                     continue
         except:
@@ -348,15 +344,16 @@ def view_courier(couriers):
         couriers_list_index(couriers)
     input('Press enter to continue')
 
+
 def add_courier(couriers):
     clear_screen()
-    courier = input(
+    courier_name = input(
         'Enter the name of the courier you would like to add\n> ').lower().strip()
-    if courier in couriers:
-        print(f'\nThis courier already exists in your list\n')
-    else:
-        couriers.append(courier)
-        print(f'\nYou have added {courier} to your couriers\n')
+    courier_phone = input('Enter the phone number of your courier\n> ')
+    courier_vehicle = input('Enter the vehicle your courier uses\n> ')
+    new_courier = Couriers(courier_name,courier_phone,courier_vehicle)
+    couriers.append(new_courier)
+    print(f'\nYou have added {courier_name} to your couriers\n')
     input('Press enter to continue')
 
     return couriers
@@ -367,28 +364,26 @@ def update_courier(couriers):
     if couriers != []:
         couriers_list_index(couriers)
         try:
-            courier_index = int(
-                input('Enter index of courier you would like to update\n> ').strip())
-            courier_old_name = couriers[courier_index]
-            courier_new_name = input(
-                '\nEnter new name of courier\n> ').lower().strip()
-            if courier_new_name in couriers:
-                print('\nThis name already exits in your list\n')
-            else:
-                couriers[courier_index] = courier_new_name
-                print(
-                    f'\n{courier_old_name} has been replaced with {courier_new_name}\n')
-            input('Press enter to continue')
+            courier_to_update = int(
+                input('Enter the index of the courier you would like to update\n> '))
+            clear_screen()
+            for attribute in vars(couriers[courier_to_update]):
+                yes_or_no = input(
+                    f'Do you want to update the {attribute} from {getattr(couriers[courier_to_update],attribute)}? (y/n)\n> ').strip().lower()
+                if yes_or_no == 'y':
+                    new_value = input('Enter new value\n> ')
+                    setattr(couriers[courier_to_update],attribute,new_value)
+                else:
+                    continue
         except:
-            print('\nPLease enter valid input\n')
-            input('Press enter to continue')
+            print('\nYou have not entered a valid input\n')
     else:
-        print('\nYou do not have any couriers to update\n')
-        input('Press enter to continue')
-
+        print('You do not have any couriers in your order list\n')
+    input('Press enter to continue')
     return couriers
 
-def delete_courier(couriers,orders):
+
+def delete_courier(couriers, orders):
     clear_screen()
     if couriers != []:
         couriers_list_index(couriers)
@@ -398,10 +393,10 @@ def delete_courier(couriers,orders):
             clear_screen()
             courier_order = []
             for i in range(len(orders)):
-                if orders[i]["courier index"] == courier_index:
+                if orders[i].courier_index == courier_index:
                     courier_order.append(i)
-                elif orders[i]["courier index"] > courier_index:
-                    orders[i]["courier index"] -= 1
+                elif orders[i].courier_index > courier_index:
+                    orders[i].courier_index -= 1
 
             while True:
                 choice = input(f'''This courier is currently active in {len(courier_order)} orders
@@ -417,7 +412,7 @@ Enter 3 to not delete the courier
 
                 if choice == '1':
                     clear_screen()
-                    courier_name = couriers[courier_index]
+                    courier_name = couriers[courier_index].name
                     couriers.pop(courier_index)
                     print(
                         f'\n{courier_name} has been removed from your couriers\n')
@@ -426,23 +421,23 @@ Enter 3 to not delete the courier
                     break
                 elif choice == '2':
                     clear_screen()
-                    courier_name = couriers[courier_index]
+                    courier_name = couriers[courier_index].name
                     couriers.pop(courier_index)
                     print(
                         f'\n{courier_name} has been removed from your couriers\n')
                     for i in courier_order:
-                        print(f'order to change: {orders[i]}')
+                        print(f'order to change:\n {repr(orders[i])}')
                         couriers_list_index(couriers)
                         cour = int(
                             input('\nWhich courier index would you like to switch to\n> '))
-                        orders[i]["courier index"] = cour
+                        orders[i].courier_index = cour
                         clear_screen()
                     break
 
                 elif choice == '3':
                     for i in range(len(orders)):
-                        if orders[i]["courier index"] >= courier_index:
-                            orders[i]["courier index"] += 1
+                        if orders[i].courier_index >= courier_index:
+                            orders[i].courier_index += 1
                     break
 
         except:
@@ -450,13 +445,13 @@ Enter 3 to not delete the courier
     else:
         print('\nYou do not have any couriers to delete\n')
     input('Press enter to continue')
-    return couriers,orders
+    return couriers, orders
 
 
 # function that handles the product menu
 
 
-def product_menu_func(products, product_menu_text,prod_update_menu_text):
+def product_menu_func(products, product_menu_text, prod_update_menu_text):
     clear_screen()
     option = input(product_menu_text).strip()
     # prints product list
@@ -467,7 +462,7 @@ def product_menu_func(products, product_menu_text,prod_update_menu_text):
         products = add_products(products)
     # allows user to update the name of a product in the list
     elif option == '3':
-        products = update_products(products,prod_update_menu_text)
+        products = update_products(products, prod_update_menu_text)
     # allows user to delete a product from the list
     elif option == '4':
         products = delete_products(products)
@@ -493,7 +488,7 @@ def courier_menu_func(couriers, orders, courier_menu_text):
         couriers = update_courier(couriers)
     # allows user to delete a courier from the list
     elif option == '4':
-        couriers,orders = delete_courier(couriers,orders)
+        couriers, orders = delete_courier(couriers, orders)
     # allows user to go back to previous menu
     elif option == '0':
         return False, couriers, orders
@@ -512,16 +507,10 @@ def order_menu_func(orders, status_list, couriers, order_menu_text):
     elif option == '3':
         orders = update_order_status(orders, status_list)
     elif option == '4':
-        orders = update_order(orders,couriers)
+        orders = update_order(orders, couriers)
     elif option == '5':
         orders = delete_order(orders)
     elif option == '0':
         return False, orders, couriers
 
     return True, orders, couriers
-
-
-
-
-
-

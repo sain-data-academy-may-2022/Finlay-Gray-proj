@@ -12,15 +12,21 @@ try:
             products.append(all_functions.Product(product['price'],product['quantity'],product['name']))
 except:
     products = []
+orders = []
 try:
-    with open('orders.json', 'r') as file:
-        orders = json.load(file)
+    with open('orders.json') as order_file:
+        temp_orders = json.load(order_file)
+        for order in temp_orders:
+            orders.append(all_functions.Orders(order['name'],order['address'],order['phone_num'],order['status'],order['order_time'],order['courier_index'],order['products_list']))
 except:
     orders = []
 
+couriers = []
 try:
-    with open('couriers.json') as couriers_file:
-        couriers = json.load(couriers_file)
+    with open('couriers.json') as courier_file:
+        temp_couriers = json.load(courier_file)
+        for courier in temp_couriers:
+            couriers.append(all_functions.Couriers(courier['name'],courier['phone'],courier['delivery']))
 except:
     couriers = []
 
@@ -100,16 +106,14 @@ while run:
         if not(cont):
             courier_menu = False
 
-with open('orders.json', mode='w') as file:
-    to_file = json.dumps(orders, indent='    ')
-    file.write(to_file)
-
 def create_json(file_path,list):
     with open(file_path, "w") as file:
         json.dump([ob.__dict__ for ob in list], file)
 
 create_json('products.json',products)
 
-with open('couriers.json', mode='w') as couriers_file:
-    to_file = json.dumps(couriers)
-    couriers_file.write(to_file)
+create_json('orders.json',orders)
+
+create_json('couriers.json',couriers)
+
+
