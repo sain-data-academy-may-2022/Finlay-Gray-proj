@@ -35,6 +35,9 @@ class Product:
         else:
             return False
 
+    def __repr__(self) -> str:
+        return f'Product name: {self.name}\nPrice: £{self.price}\nQuantity: {self.quantity}\n'
+
 
 class Orders:
     def __init__(self, name, address, phone_num, status, order_time, courier_index, products_list):
@@ -49,7 +52,10 @@ class Orders:
     def __repr__(self) -> str:
         return f'Order name: {self.name}\nAddress: {self.address}\nPhone_number: {self.phone_num}\nStatus: {self.status}\nOrder time: {self.order_time}\nCourier index: {self.courier_index}\nProducts in order: {self.products_list}\n'
 
-
+    def __eq__(self, other):
+        if (isinstance(other, Product)):
+            return self.number == other.number and self.letter == other.letter
+        return False
 
 class Couriers:
     def __init__(self, name,phone,delivery):
@@ -192,20 +198,25 @@ def delete_products(products):
 
 def add_products(products):
     clear_screen()
-    product = input(
+    product_name = input(
         'Enter the name of the product you would like to add\n> ').lower().strip()
     product_price = float(
         input('Enter the price of this product\n> ').lower().strip())
     product_quantity = int(
         input('Enter the quantity of this product you have\n> ').strip())
-    if product in products:
-        print(f'\nThis product already exists in your list\n')
-    elif product == ''.strip():
+    if products != []:
+        for product in products:
+            if product_name == product.name:
+                print(f'\nThis product already exists in your list\n')
+                input('Press enter to continue')
+                return products
+                break
+    if product_name == ''.strip():
         print(f'\nYou have not entered a valid input\n')
     else:
-        new_product = Product(product_price, product_quantity, product)
+        new_product = Product(product_price, product_quantity, product_name)
         products.append(new_product)
-        print(f'\nYou have added {product} to your products\n')
+        print(f'\nYou have added {product_name} to your products\n')
     input('Press enter to continue')
 
     return products
