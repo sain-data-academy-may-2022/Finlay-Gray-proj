@@ -9,7 +9,8 @@ try:
     with open('products.json') as product_file:
         temp_products = json.load(product_file)
         for product in temp_products:
-            products.append(all_functions.Product(product['price'],product['quantity'],product['name']))
+            products.append(all_functions.Product(
+                product['price'], product['quantity'], product['name']))
 except:
     products = []
 orders = []
@@ -17,7 +18,18 @@ try:
     with open('orders.json') as order_file:
         temp_orders = json.load(order_file)
         for order in temp_orders:
-            orders.append(all_functions.Orders(order['name'],order['address'],order['phone_num'],order['status'],order['order_time'],order['courier_index'],order['products_list']))
+            orders.append(all_functions.Orders(order['name'], order['address'], order['phone_num'],
+                          order['status'], order['order_time'], order['courier_index'], order['products_list']))
+
+        for order in orders:
+            temp_products_list = []
+            for prod in order.products_list:
+                temp_products_list.append(all_functions.Product(
+                    prod['price'], prod['quantity'], prod['name']))
+
+            order.products_list = temp_products_list
+
+
 except:
     orders = []
 
@@ -26,7 +38,8 @@ try:
     with open('couriers.json') as courier_file:
         temp_couriers = json.load(courier_file)
         for courier in temp_couriers:
-            couriers.append(all_functions.Couriers(courier['name'],courier['phone'],courier['delivery']))
+            couriers.append(all_functions.Couriers(
+                courier['name'], courier['phone'], courier['delivery']))
 except:
     couriers = []
 
@@ -60,7 +73,9 @@ order_menu_text = '''Enter 1 to view orders
 Enter 2 to create a new order
 Enter 3 to update an existing order status
 Enter 4 to update an existing order
-Enter 5 to delete an order
+Enter 5 to add products to your order
+Enter 6 to remove products from your order
+Enter 7 to delete an order
 Enter 0 to return to main menu
 > '''
 courier_menu_text = '''Enter 1 to view courier list
@@ -92,12 +107,12 @@ while run:
     # runs production menu function
     while product_menu:
         cont, products = all_functions.product_menu_func(
-            products, product_menu_text,prod_update_menu_text)
+            products, product_menu_text, prod_update_menu_text)
         if not(cont):
             product_menu = False
     while order_menu:
         cont, orders, couriers = all_functions.order_menu_func(
-            orders, status_list, couriers, order_menu_text)
+            orders, status_list, couriers, order_menu_text, products)
         if not(cont):
             order_menu = False
     while courier_menu:
@@ -106,14 +121,17 @@ while run:
         if not(cont):
             courier_menu = False
 
-def create_json(file_path,list):
+
+def create_json(file_path, list):
     with open(file_path, "w") as file:
         json.dump([ob.__dict__ for ob in list], file)
 
-create_json('products.json',products)
 
-create_json('orders.json',orders)
+create_json('products.json', products)
 
-create_json('couriers.json',couriers)
+for order in orders:
+    order.products_list = [ob.__dict__ for ob in order.products_list]
 
+create_json('orders.json', orders)
 
+create_json('couriers.json', couriers)
