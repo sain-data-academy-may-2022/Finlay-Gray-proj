@@ -36,7 +36,7 @@ class Product:
             return False
 
     def __repr__(self) -> str:
-        return f'Product name: {self.name}\nPrice: £{self.price}\nQuantity: {self.quantity}\n'
+        return f'Product name: {self.name} Price: £{self.price} Quantity: {self.quantity}\n'
 
 
 class Orders:
@@ -57,15 +57,15 @@ class Orders:
             return self.number == other.number and self.letter == other.letter
         return False
 
+
 class Couriers:
-    def __init__(self, name,phone,delivery):
+    def __init__(self, name, phone, delivery):
         self.name = name
         self.phone = phone
         self.delivery = delivery
 
     def name_change(self, new_name):
         self.name = new_name
-
 
     # each service has an order capacity
     # each servvice has a vehicle
@@ -307,7 +307,7 @@ def update_order(orders, couriers):
                 input('Enter the index of the order you would like to update\n> '))
             clear_screen()
             for attribute in vars(orders[order_to_update]):
-                if attribute == "status" or attribute == "order-time":
+                if attribute == "status" or attribute == "order_time" or attribute == "products_list":
                     continue
                 yes_or_no = input(
                     f'Do you want to update the {attribute} from {getattr(orders[order_to_update],attribute)}? (y/n)\n> ').strip().lower()
@@ -316,11 +316,11 @@ def update_order(orders, couriers):
                     couriers_list_index(couriers)
                     index = int(
                         input('\nEnter the index of the new courier\n> '))
-                    setattr(orders[order_to_update],attribute,index)
+                    setattr(orders[order_to_update], attribute, index)
                     continue
                 elif yes_or_no == 'y':
                     new_value = input('Enter new value\n> ')
-                    setattr(orders[order_to_update],attribute,new_value)
+                    setattr(orders[order_to_update], attribute, new_value)
                 else:
                     continue
         except:
@@ -328,6 +328,54 @@ def update_order(orders, couriers):
     else:
         print('You do not have any orders in your order list\n')
     input('Press enter to continue')
+    return orders
+
+
+def add_prod_to_order(orders, products):
+    clear_screen()
+    if orders != []:
+        orders_list_index(orders)
+        try:
+            order_to_add_to = int(
+                input('Enter the index of the order you would like to add a product to\n> '))
+            while True:
+                clear_screen()
+                to_cont = input(
+                    'Do you want to add another product? (y/n) > ').strip().lower()
+                if to_cont == 'n':
+                    break
+                else:
+                    clear_screen()
+                    product_list_index(products)
+                    product_index = int(
+                        input('Enter the index of the product you would like to add\n> '))
+                    quant = int(
+                        input('Enter the quantity of the product you want to add\n> '))
+                    orders[order_to_add_to].products_list.append(
+                        Product(products[product_index].price, quant, products[product_index].name))
+
+        except:
+            print('\nYou have not entered a valid input\n')
+
+    return orders
+
+
+def rem_prod_to_order(orders):
+    clear_screen()
+    if orders != []:
+        orders_list_index(orders)
+    try:
+        order_to_add_to = int(
+            input('Enter the index of the order you would like to delete a product from\n> '))
+        for i in range(len(orders[order_to_add_to].products_list)):
+            print(
+                f'Product name: {orders[order_to_add_to].products_list[i].name}\tIndex: {i}')
+        to_del = int(input('Enter index of product you want to remove\n> '))
+        orders[order_to_add_to].product_list.pop(to_del)
+    except:
+        print('\nYou have not entered a valid input\n')
+        input('Press enter to continue')
+
     return orders
 
 
@@ -362,7 +410,7 @@ def add_courier(couriers):
         'Enter the name of the courier you would like to add\n> ').lower().strip()
     courier_phone = input('Enter the phone number of your courier\n> ')
     courier_vehicle = input('Enter the vehicle your courier uses\n> ')
-    new_courier = Couriers(courier_name,courier_phone,courier_vehicle)
+    new_courier = Couriers(courier_name, courier_phone, courier_vehicle)
     couriers.append(new_courier)
     print(f'\nYou have added {courier_name} to your couriers\n')
     input('Press enter to continue')
@@ -383,7 +431,7 @@ def update_courier(couriers):
                     f'Do you want to update the {attribute} from {getattr(couriers[courier_to_update],attribute)}? (y/n)\n> ').strip().lower()
                 if yes_or_no == 'y':
                     new_value = input('Enter new value\n> ')
-                    setattr(couriers[courier_to_update],attribute,new_value)
+                    setattr(couriers[courier_to_update], attribute, new_value)
                 else:
                     continue
         except:
@@ -508,7 +556,7 @@ def courier_menu_func(couriers, orders, courier_menu_text):
     return True, couriers, orders
 
 
-def order_menu_func(orders, status_list, couriers, order_menu_text):
+def order_menu_func(orders, status_list, couriers, order_menu_text, products):
     clear_screen()
     option = input(order_menu_text).strip()
     if option == '1':
@@ -520,6 +568,10 @@ def order_menu_func(orders, status_list, couriers, order_menu_text):
     elif option == '4':
         orders = update_order(orders, couriers)
     elif option == '5':
+        orders = add_prod_to_order(orders, products)
+    elif option == '6':
+        orders = rem_prod_to_order(orders)
+    elif option == '7':
         orders = delete_order(orders)
     elif option == '0':
         return False, orders, couriers
