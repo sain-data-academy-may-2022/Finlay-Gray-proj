@@ -43,7 +43,11 @@ class Product:
         return f'Product name: {self.name}\nPrice: £{self.price}\nQuantity: {self.quantity}\n'
 
 class OrderProducts:
-    pass
+    def __init__(self,order_id,product_id,quantity) -> None:
+        self.order_id = order_id
+        self.product_id = product_id
+        self.quantity = quantity
+        
 
 
 class Orders:
@@ -76,6 +80,9 @@ class Couriers:
     def name_change(self, new_name):
         self.name = new_name
 
+    def __repr__(self) -> str:
+        return f'Courier name: {self.name}\nPhone number: {self.phone}\nCouriers delivery vehicle: {self.delivery}\n'
+
     # each service has an order capacity
     # each servvice has a vehicle
     # each service has a average delivery time
@@ -87,7 +94,7 @@ def print_list(table,con):
     database.sql_statement(cur,f'''SELECT * FROM {table}''')
     items = cur.fetchall()
     field_names = [i[0] for i in cur.description]
-    print(tabulate(items, headers=field_names, tablefmt='psql'))
+    print(tabulate(items, headers=field_names, tablefmt='psql',stralign='center',numalign='center'))
     database.close_cursor(cur)
     # for i in range(len(list)):
     #     print(
@@ -103,11 +110,6 @@ def status_list_index(list):
     for i in range(len(list)):
         print(f'Status: {list[i]}\nIndex value: {i}\n')
 
-
-def couriers_list_index(list):
-    for i in range(len(list)):
-        print(
-            f'Courier name: {list[i].name}\nCourier phone number: {list[i].phone}\nCourier vehicle: {list[i].delivery}\nIndex value: {i}\n')
 
 
 def update_products(con, prod_update_menu_text):
@@ -410,54 +412,105 @@ def delete_order(orders):
     return orders
 
 
-def view_courier(couriers):
+def view_courier(con):
     clear_screen()
-    if couriers == []:
-        print('There are no couriers in your list!\n')
-    else:
-        couriers_list_index(couriers)
+    print_list('Couriers', con)
     input('Press enter to continue')
 
 
-def add_courier(couriers):
+def add_courier(con):
+    cur = database.get_cursor(con)
     clear_screen()
     courier_name = input(
         'Enter the name of the courier you would like to add\n> ').lower().strip()
     courier_phone = input('Enter the phone number of your courier\n> ')
     courier_vehicle = input('Enter the vehicle your courier uses\n> ')
-    new_courier = Couriers(courier_name, courier_phone, courier_vehicle)
-    couriers.append(new_courier)
+    database.sql_statement(cur,f'''INSERT INTO Couriers (name,phone,delivery) VALUES ('{courier_name}','{courier_phone}','{courier_vehicle}')''')
+    con.commit()
     print(f'\nYou have added {courier_name} to your couriers\n')
     input('Press enter to continue')
 
-    return couriers
+    database.close_cursor(cur)
 
 
-def update_courier(couriers):
+def update_courier(con,courier_update_menu_text):
     clear_screen()
-    if couriers != []:
-        couriers_list_index(couriers)
+    cur = database.get_cursor(con)
+    is_empty = database.check_if_table_empty(cur,'Couriers')
+    if not is_empty:
         try:
-            courier_to_update = int(
-                input('Enter the index of the courier you would like to update\n> '))
             clear_screen()
-            for attribute in vars(couriers[courier_to_update]):
-                yes_or_no = input(
-                    f'Do you want to update the {attribute} from {getattr(couriers[courier_to_update],attribute)}? (y/n)\n> ').strip().lower()
-                if yes_or_no == 'y':
-                    new_value = input('Enter new value\n> ')
-                    setattr(couriers[courier_to_update], attribute, new_value)
-                else:
-                    continue
+            print_list('Couriers',con)
+            courier_id = int(
+                        input('Enter The id of courier you would like to update\n> ').strip())
+            database.sql_statement(cur,f'''SELECT * FROM Couriers WHERE id = {courier_id}''')
+            new_cour = cur.fetchone()
+            cour_class = Couriers(new_cour[0],new_cour[1],new_cour[2],new_cour[3])
+            while True:
+                clear_screen()
+                choice = input(courier_update_menu_text)
+                if choice == '0':
+                    database.sql_statement(cur,f'''UPDATE Couriers SET name = '{cour_class.name}', phone = '{cour_class.phone}', delivery = '{cour_class.delivery}' WHERE id = {courier_id}''')
+                    con.commit()
+                    break
+                elif choice == '1':
+                    clear_screen()
+                    print(cour_class)
+                    
+                    try:
+                        cour_old_name = cour_class.name
+                        cour_new_name = input(
+                            '\nEnter new name of Courier\n> ').strip()
+                        cour_class.name_change(cour_new_name)
+                        print(
+                            f'\n{cour_old_name} has been replaced with {cour_new_name}\n')
+                        input('Press enter to continue')
+                    except:
+                        print('\nPLease enter valid input\n')
+                        input('Press enter to continue')
+
+                elif choice == '2':
+                    clear_screen()
+                    print(cour_class)
+                    try:
+                        new_number = input(
+                            '\nEnter new number of courier\n> ').lower().strip()
+                        cour_class.phone = new_number
+                        print(
+                            f'\nThe price of {cour_class.name} has been replaced with £{new_number}\n')
+                        input('Press enter to continue')
+                    except:
+                        print('\nPLease enter valid input\n')
+                        input('Press enter to continue')
+
+                elif choice == '3':
+                    clear_screen()
+                    print(cour_class)
+                    try:
+                        new_vehicle = input(
+                            '\nEnter new delivery vehicle of courier\n> ').lower().strip()
+                        cour_class.delivery = new_vehicle
+                        print(
+                            f'\nThe delivery vehicle of {cour_class.name} has been replaced with £{new_vehicle}\n')
+                        input('Press enter to continue')
+                    except:
+                        print('\nPLease enter valid input\n')
+                        input('Press enter to continue')
+
+
         except:
             print('\nYou have not entered a valid input\n')
+            input('Press enter to continue')
+
+
     else:
-        print('You do not have any couriers in your order list\n')
-    input('Press enter to continue')
-    return couriers
+        print('\nYou do not have any products to update\n')
+        input('Press enter to continue')
+
+    database.close_cursor(cur)
 
 
-def delete_courier(couriers, orders):
+def delete_courier(con,orders):
     clear_screen()
     if couriers != []:
         couriers_list_index(couriers)
@@ -548,21 +601,21 @@ def product_menu_func(con,product_menu_text, prod_update_menu_text):
     return True
 
 
-def courier_menu_func(couriers, orders, courier_menu_text):
+def courier_menu_func(con,couriers, orders, courier_menu_text,courier_update_menu_text):
     clear_screen()
     option = input(courier_menu_text).strip()
     # prints courier list
     if option == '1':
-        view_courier(couriers)
+        view_courier(con)
     # allows user to add a courier to the list
     elif option == '2':
-        couriers = add_courier(couriers)
+        add_courier(con)
     # allows user to update the name of a courier in the list
     elif option == '3':
-        couriers = update_courier(couriers)
+        update_courier(con,courier_update_menu_text)
     # allows user to delete a courier from the list
     elif option == '4':
-        couriers, orders = delete_courier(couriers, orders)
+        orders = delete_courier(con, orders)
     # allows user to go back to previous menu
     elif option == '0':
         return False, couriers, orders

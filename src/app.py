@@ -85,7 +85,11 @@ Enter 3 to update current courier
 Enter 4 to delete a courier
 Enter 0 to return to main menu 
 > '''
-
+courier_update_menu_text = '''Enter 1 to courier's name
+Enter 2 to update courier's phone number
+Enter 3 to update courier's vehicle
+Enter 0 to return to main menu
+> '''
 status_list = ['PREPARING', 'QUALITY CHECK', 'OUT FOR DELIVERY', 'DELIVERED']
 # function that prints out product list with corresponding index
 
@@ -118,8 +122,8 @@ while run:
         if not(cont):
             order_menu = False
     while courier_menu:
-        cont, couriers, orders = all_functions.courier_menu_func(
-            couriers, orders, courier_menu_text)
+        cont, couriers, orders = all_functions.courier_menu_func(con,
+            couriers, orders, courier_menu_text,courier_update_menu_text)
         if not(cont):
             courier_menu = False
 

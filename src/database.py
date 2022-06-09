@@ -26,7 +26,7 @@ def check_if_table_empty(c,table_name):
     sql_statement(c,f'''SELECT * FROM {table_name}''')
     is_empty = c.fetchall()
 
-    if is_empty == []:
+    if is_empty == ():
         return True
 
     else:

@@ -50,3 +50,6 @@ def test_add_products_same(mock_print, mock_input):
     add_products(products)
 
     mock_print.assert_called_with(ex_args)
+
+
+
