@@ -3,6 +3,9 @@ import json
 from math import prod
 import all_functions
 import database
+import Productfile
+import Couriersfile
+import Ordersfile
 # this is how you get current time time.asctime( time.localtime(time.time()) )
 # setting up inital variables
 products = []
@@ -112,18 +115,18 @@ while run:
         all_functions.clear_screen()
     # runs production menu function
     while product_menu:
-        cont = all_functions.product_menu_func(con,
+        cont = Productfile.product_menu_func(con,
             product_menu_text, prod_update_menu_text)
         if not(cont):
             product_menu = False
     while order_menu:
-        cont, orders, couriers = all_functions.order_menu_func(
+        cont, orders, couriers = Ordersfile.order_menu_func(con,
             orders, status_list, couriers, order_menu_text, products)
         if not(cont):
             order_menu = False
     while courier_menu:
-        cont, couriers, orders = all_functions.courier_menu_func(con,
-            couriers, orders, courier_menu_text,courier_update_menu_text)
+        cont, orders = Couriersfile.courier_menu_func(con,
+             orders, courier_menu_text,courier_update_menu_text)
         if not(cont):
             courier_menu = False
 
