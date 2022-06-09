@@ -1,6 +1,9 @@
 # imports
 import os
 import time
+import database
+from tabulate import tabulate
+
 
 # clearing the terminal function
 
@@ -12,7 +15,8 @@ def clear_screen():
 
 
 class Product:
-    def __init__(self, price, quantity, name):
+    def __init__(self, id:int, price, quantity, name):
+        self.id = id
         self.price = price
         self.quantity = quantity
         self.name = name
@@ -36,11 +40,15 @@ class Product:
             return False
 
     def __repr__(self) -> str:
-        return f'Product name: {self.name} Price: £{self.price} Quantity: {self.quantity}\n'
+        return f'Product name: {self.name}\nPrice: £{self.price}\nQuantity: {self.quantity}\n'
+
+class OrderProducts:
+    pass
 
 
 class Orders:
-    def __init__(self, name, address, phone_num, status, order_time, courier_index, products_list):
+    def __init__(self, id:int, name, address, phone_num, status, order_time, courier_index, products_list):
+        self.id = id
         self.name = name
         self.address = address
         self.phone_num = phone_num
@@ -59,7 +67,8 @@ class Orders:
 
 
 class Couriers:
-    def __init__(self, name, phone, delivery):
+    def __init__(self, id:int, name, phone, delivery):
+        self.id = id
         self.name = name
         self.phone = phone
         self.delivery = delivery
@@ -72,10 +81,17 @@ class Couriers:
     # each service has a average delivery time
 
 
-def product_list_index(list):
-    for i in range(len(list)):
-        print(
-            f'Product name: {list[i].name}\nPrice: £{list[i].price}\nQuantity: {list[i].quantity}\nIndex value: {i}\n')
+def print_list(table,con):
+    
+    cur = database.get_cursor(con)
+    database.sql_statement(cur,f'''SELECT * FROM {table}''')
+    items = cur.fetchall()
+    field_names = [i[0] for i in cur.description]
+    print(tabulate(items, headers=field_names, tablefmt='psql'))
+    database.close_cursor(cur)
+    # for i in range(len(list)):
+    #     print(
+    #         f'Product name: {list[i].name}\nPrice: £{list[i].price}\nQuantity: {list[i].quantity}\n')
 
 
 def orders_list_index(list):
@@ -94,109 +110,110 @@ def couriers_list_index(list):
             f'Courier name: {list[i].name}\nCourier phone number: {list[i].phone}\nCourier vehicle: {list[i].delivery}\nIndex value: {i}\n')
 
 
-def update_products(products, prod_update_menu_text):
+def update_products(con, prod_update_menu_text):
     clear_screen()
-    if products != []:
-        while True:
+    cur = database.get_cursor(con)
+    is_empty = database.check_if_table_empty(cur,'Product')
+    if not is_empty:
+        try:
             clear_screen()
-            choice = input(prod_update_menu_text)
-            if choice == '0':
-                break
-            elif choice == '1':
+            print_list('Product',con)
+            product_id = int(
+                        input('Enter The id of product you would like to update\n> ').strip())
+            database.sql_statement(cur,f'''SELECT * FROM Product WHERE id = {product_id}''')
+            new_prod = cur.fetchone()
+            prod_class = Product(new_prod[0],new_prod[2],new_prod[3],new_prod[1])
+            while True:
                 clear_screen()
-                product_list_index(products)
-                try:
-                    product_index = int(
-                        input('Enter index of product you would like to update\n> ').strip())
-                    product_old_name = products[product_index].name
-                    product_new_name = input(
-                        '\nEnter new name of product\n> ').lower().strip()
-                    # if product_new_name in products.name:
-                    #     print('\nThis name already exits in your list\n')
-                    # else:
-                    products[product_index].name_change(product_new_name)
-                    print(
-                        f'\n{product_old_name} has been replaced with {product_new_name}\n')
-                    input('Press enter to continue')
-                except:
-                    print('\nPLease enter valid input\n')
-                    input('Press enter to continue')
+                choice = input(prod_update_menu_text)
+                if choice == '0':
+                    database.sql_statement(cur,f'''UPDATE Product SET name = '{prod_class.name}', price = {float(prod_class.price)}, quantity = {prod_class.quantity} WHERE id = {product_id}''')
+                    con.commit()
+                    break
+                elif choice == '1':
+                    clear_screen()
+                    print(prod_class)
+                    try:
+                        product_old_name = prod_class.name
+                        product_new_name = input(
+                            '\nEnter new name of product\n> ').lower().strip()
+                        # if product_new_name in products.name:
+                        #     print('\nThis name already exits in your list\n')
+                        # else:
+                        prod_class.name_change(product_new_name)
+                        print(
+                            f'\n{product_old_name} has been replaced with {product_new_name}\n')
+                        input('Press enter to continue')
+                    except:
+                        print('\nPLease enter valid input\n')
+                        input('Press enter to continue')
 
-            elif choice == '2':
-                clear_screen()
-                product_list_index(products)
-                try:
-                    product_index = int(
-                        input('Enter index of product you would like to update\n> ').strip())
-                    product_new_price = input(
-                        '\nEnter new price of product\n> ').lower().strip()
-                    products[product_index].price_change(product_new_price)
-                    print(
-                        f'\nThe price of {products[product_index].name} has been replaced with £{product_new_price}\n')
-                    input('Press enter to continue')
-                except:
-                    print('\nPLease enter valid input\n')
-                    input('Press enter to continue')
+                elif choice == '2':
+                    clear_screen()
+                    print(prod_class)
+                    try:
+                        product_new_price = input(
+                            '\nEnter new price of product\n> ').lower().strip()
+                        prod_class.price_change(product_new_price)
+                        print(
+                            f'\nThe price of {prod_class.name} has been replaced with £{product_new_price}\n')
+                        input('Press enter to continue')
+                    except:
+                        print('\nPLease enter valid input\n')
+                        input('Press enter to continue')
 
-            elif choice == '3':
-                clear_screen()
-                product_list_index(products)
-                try:
-                    product_index = int(
-                        input('Enter index of product you would like to update\n> ').strip())
-                    quantity_to_add = int(input(
-                        '\nEnter how much you would like to increase the quantity by\n> ').lower().strip())
-                    products[product_index].quantity_add(quantity_to_add)
-                    print(
-                        f'\nThe quantity of {products[product_index].name} has been increased by {quantity_to_add} to become {products[product_index].quantity}\n')
-                    input('Press enter to continue')
-                except:
-                    print('\nPLease enter valid input\n')
-                    input('Press enter to continue')
+                elif choice == '3':
+                    clear_screen()
+                    print(prod_class)
+                    try:
+                        quantity_to_add = int(input(
+                            '\nEnter how much you would like to increase the quantity by\n> ').lower().strip())
+                        prod_class.quantity_add(quantity_to_add)
+                        print(
+                            f'\nThe quantity of {prod_class.name} has been increased by {quantity_to_add} to become {prod_class.quantity}\n')
+                        input('Press enter to continue')
+                    except:
+                        print('\nPLease enter valid input\n')
+                        input('Press enter to continue')
 
-            elif choice == '4':
-                clear_screen()
-                product_list_index(products)
-                try:
-                    product_index = int(
-                        input('Enter index of product you would like to update\n> ').strip())
-                    quantity_to_sub = int(input(
-                        '\nEnter how much you would like to decrease the quantity by\n> ').lower().strip())
-                    products[product_index].quantity_subtract(quantity_to_sub)
-                    print(
-                        f'\nThe quantity of {products[product_index].name} has been decreased by {quantity_to_sub} to become {products[product_index].quantity}\n')
-                    input('Press enter to continue')
-                except:
-                    print('\nPLease enter valid input\n')
-                    input('Press enter to continue')
+                elif choice == '4':
+                    clear_screen()
+                    print(prod_class)
+                    try:
+                        quantity_to_sub = int(input(
+                            '\nEnter how much you would like to decrease the quantity by\n> ').lower().strip())
+                        prod_class.quantity_subtract(quantity_to_sub)
+                        print(
+                            f'\nThe quantity of {prod_class.name} has been decreased by {quantity_to_sub} to become {prod_class.quantity}\n')
+                        input('Press enter to continue')
+                    except:
+                        print('\nPLease enter valid input\n')
+                        input('Press enter to continue')
+
+        except:
+            print('\nYou have not entered a valid input\n')
+            input('Press enter to continue')
+
 
     else:
         print('\nYou do not have any products to update\n')
         input('Press enter to continue')
 
-    return products
+    database.close_cursor(cur)
 
 
-def delete_products(products):
+def delete_products(con):
+    cur = database.get_cursor(con)
     clear_screen()
-    if products != []:
-        product_list_index(products)
-        try:
-            product_index = int(
-                input('Enter index of product you would like to remove\n> ').strip())
-            product_name = products[product_index]
-            products.pop(product_index)
-            print(f'\n{product_name} has been removed from your products\n')
-        except:
-            print('\nYou have not entered a valid index\n')
-    else:
-        print('\nYou do not have any products to delete\n')
-    input('Press enter to continue')
-
-    return products
+    print_list('Product',con)
+    id_to_del = int(input('Enter the id of the product you would like to delete\n> ').strip())
+    database.sql_statement(cur,f'''DELETE FROM Product WHERE id = {id_to_del}''')
+    con.commit
+    database.close_cursor(cur)
 
 
-def add_products(products):
+def add_products(con):
+    cur = database.get_cursor(con)
     clear_screen()
     product_name = input(
         'Enter the name of the product you would like to add\n> ').lower().strip()
@@ -204,30 +221,28 @@ def add_products(products):
         input('Enter the price of this product\n> ').lower().strip())
     product_quantity = int(
         input('Enter the quantity of this product you have\n> ').strip())
-    if products != []:
-        for product in products:
-            if product_name == product.name:
-                print(f'\nThis product already exists in your list\n')
-                input('Press enter to continue')
-                return products
-                break
+    # if products != []:
+    #     for product in products:
+    #         if product_name == product.name:
+    #             print(f'\nThis product already exists in your list\n')
+    #             input('Press enter to continue')
+    #             return products
+    #             break
     if product_name == ''.strip():
         print(f'\nYou have not entered a valid input\n')
     else:
-        new_product = Product(product_price, product_quantity, product_name)
-        products.append(new_product)
+        database.sql_statement(cur,f'''INSERT INTO Product (name,price,quantity) VALUES ('{product_name}',{product_price},{product_quantity})''')
+        con.commit()
         print(f'\nYou have added {product_name} to your products\n')
     input('Press enter to continue')
 
-    return products
+    database.close_cursor(cur)
+    
 
 
-def view_products(products):
+def view_products(con):
     clear_screen()
-    if products == []:
-        print('There are no products in your list!\n')
-    else:
-        product_list_index(products)
+    print_list('Product', con)
     input('Press enter to continue')
 
 
@@ -510,27 +525,27 @@ Enter 3 to not delete the courier
 # function that handles the product menu
 
 
-def product_menu_func(products, product_menu_text, prod_update_menu_text):
+def product_menu_func(con,product_menu_text, prod_update_menu_text):
     clear_screen()
     option = input(product_menu_text).strip()
     # prints product list
     if option == '1':
-        view_products(products)
+        view_products(con)
     # allows user to add a product to the list
     elif option == '2':
-        products = add_products(products)
+        add_products(con)
     # allows user to update the name of a product in the list
     elif option == '3':
-        products = update_products(products, prod_update_menu_text)
+        update_products(con,prod_update_menu_text)
     # allows user to delete a product from the list
     elif option == '4':
-        products = delete_products(products)
+        delete_products(con)
     # allows user to go back to previous menu
     elif option == '0':
-        return False, products
+        return False
 
     # keeps the loop running
-    return True, products
+    return True
 
 
 def courier_menu_func(couriers, orders, courier_menu_text):

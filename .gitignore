@@ -1,4 +1,3 @@
 *.venv
 *.json
 git_func.py
-requirements.txt

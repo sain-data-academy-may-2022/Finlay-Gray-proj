@@ -2,6 +2,7 @@
 import json
 from math import prod
 import all_functions
+import database
 # this is how you get current time time.asctime( time.localtime(time.time()) )
 # setting up inital variables
 products = []
@@ -88,6 +89,7 @@ Enter 0 to return to main menu
 status_list = ['PREPARING', 'QUALITY CHECK', 'OUT FOR DELIVERY', 'DELIVERED']
 # function that prints out product list with corresponding index
 
+con = database.get_connection()
 
 # main loop
 while run:
@@ -106,8 +108,8 @@ while run:
         all_functions.clear_screen()
     # runs production menu function
     while product_menu:
-        cont, products = all_functions.product_menu_func(
-            products, product_menu_text, prod_update_menu_text)
+        cont = all_functions.product_menu_func(con,
+            product_menu_text, prod_update_menu_text)
         if not(cont):
             product_menu = False
     while order_menu:
@@ -120,6 +122,9 @@ while run:
             couriers, orders, courier_menu_text)
         if not(cont):
             courier_menu = False
+
+
+database.close_connection(con)
 
 
 def create_json(file_path, list):
