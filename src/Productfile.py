@@ -47,6 +47,7 @@ def update_products(con, prod_update_menu_text):
             prod_class = Product(new_prod[0],new_prod[2],new_prod[3],new_prod[1])
             while True:
                 all_functions.clear_screen()
+                print(prod_class)
                 choice = input(prod_update_menu_text)
                 if choice == '0':
                     database.sql_statement(cur,f'''UPDATE Product SET name = '{prod_class.name}', price = {float(prod_class.price)}, quantity = {prod_class.quantity} WHERE id = {product_id}''')

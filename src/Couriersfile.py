@@ -58,6 +58,7 @@ def update_courier(con,courier_update_menu_text):
             cour_class = Couriers(new_cour[0],new_cour[1],new_cour[2],new_cour[3])
             while True:
                 all_functions.clear_screen()
+                print(cour_class)
                 choice = input(courier_update_menu_text)
                 if choice == '0':
                     database.sql_statement(cur,f'''UPDATE Couriers SET name = '{cour_class.name}', phone = '{cour_class.phone}', delivery = '{cour_class.delivery}' WHERE id = {courier_id}''')
@@ -87,7 +88,7 @@ def update_courier(con,courier_update_menu_text):
                             '\nEnter new number of courier\n> ').lower().strip()
                         cour_class.phone = new_number
                         print(
-                            f'\nThe price of {cour_class.name} has been replaced with £{new_number}\n')
+                            f'\nThe phone number of {cour_class.name} has been replaced with {new_number}\n')
                         input('Press enter to continue')
                     except:
                         print('\nPLease enter valid input\n')
@@ -101,7 +102,7 @@ def update_courier(con,courier_update_menu_text):
                             '\nEnter new delivery vehicle of courier\n> ').lower().strip()
                         cour_class.delivery = new_vehicle
                         print(
-                            f'\nThe delivery vehicle of {cour_class.name} has been replaced with £{new_vehicle}\n')
+                            f'\nThe delivery vehicle of {cour_class.name} has been replaced with {new_vehicle}\n')
                         input('Press enter to continue')
                     except:
                         print('\nPLease enter valid input\n')
@@ -114,7 +115,7 @@ def update_courier(con,courier_update_menu_text):
 
 
     else:
-        print('\nYou do not have any products to update\n')
+        print('\nYou do not have any couriers to update\n')
         input('Press enter to continue')
 
     database.close_cursor(cur)
@@ -122,8 +123,10 @@ def update_courier(con,courier_update_menu_text):
 
 def delete_courier(con,orders):
     all_functions.clear_screen()
-    if couriers != []:
-        couriers_list_index(couriers)
+    cur = database.get_cursor(con)
+    is_empty = database.check_if_table_empty(cur,'Couriers')
+    if not is_empty:
+        all_functions.print_list('Couriers',con)
         try:
             courier_index = int(
                 input('Enter index of courier you would like to remove\n> ').strip())

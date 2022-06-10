@@ -67,10 +67,10 @@ Enter 3 to update current product
 Enter 4 to delete a product
 Enter 0 to return to main menu 
 > '''
-prod_update_menu_text = '''Enter 1 to update a products name
-Enter 2 to update a products price
-Enter 3 to add to a products quantity
-Enter 4 to subtract from a products quantity
+prod_update_menu_text = '''Enter 1 to update products name
+Enter 2 to update products price
+Enter 3 to add to products quantity
+Enter 4 to subtract from products quantity
 Enter 0 to return to main menu
 > '''
 order_menu_text = '''Enter 1 to view orders
@@ -80,6 +80,12 @@ Enter 4 to update an existing order
 Enter 5 to add products to your order
 Enter 6 to remove products from your order
 Enter 7 to delete an order
+Enter 0 to return to main menu
+> '''
+order_update_menu_text = '''Enter 1 to update name of order
+Enter 2 to update address of order
+Enter 3 to update phone number of order
+Enter 4 to change tthe courier of order
 Enter 0 to return to main menu
 > '''
 courier_menu_text = '''Enter 1 to view courier list
@@ -120,7 +126,7 @@ while run:
         if not(cont):
             product_menu = False
     while order_menu:
-        cont, orders, couriers = Ordersfile.order_menu_func(con,
+        cont, orders, couriers = Ordersfile.order_menu_func(con,order_update_menu_text,
             orders, status_list, couriers, order_menu_text, products)
         if not(cont):
             order_menu = False
