@@ -1,1 +1,0 @@
-[{"name": "john", "address": "john's house", "phone_num": "07646374873", "status": "PREPARING", "order_time": "Mon Jun  6 16:29:34 2022", "courier_index": 0, "products_list": [{"price": 3.0, "quantity": 10, "name": "sandwich"}, {"price": 1.5, "quantity": 5, "name": "cake"}]}]

@@ -22,10 +22,18 @@ def get_cursor(con):
     cursor = con.cursor()
     return cursor
 
+def check_if_table_empty(c,table_name):
+    sql_statement(c,f'''SELECT * FROM {table_name}''')
+    is_empty = c.fetchall()
 
+    if is_empty == ():
+        return True
 
+    else:
+        return False
 
-
+def sql_statement(c,sql):
+    c.execute(sql)
 
 
 def close_cursor(cursor):
