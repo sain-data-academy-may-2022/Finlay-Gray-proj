@@ -145,7 +145,7 @@ Therefore please pick what you would like to do:
 
 Enter 1 to delete the courier and delete all orders associated with it
 
-Enter 2 to delete the courier and change the courier of all the associated couriers
+Enter 2 to delete the courier and change the courier of all the associated orders
 
 Enter 3 to not delete the courier
 > ''')
