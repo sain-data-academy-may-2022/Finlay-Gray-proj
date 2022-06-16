@@ -1,6 +1,7 @@
 import all_functions
 import database
 from tabulate import tabulate
+import Productfile
 class Orders:
     def __init__(self, id:int, name, address, phone_num, status, order_time, courier_index):
         self.id = id
@@ -181,84 +182,106 @@ def update_order(con,order_update_menu_text):
 
     database.close_cursor(cur)
 
-    # if not is_empty:
-    #     all_functions.print_list(con)
-    #     try:
-    #         order_to_update = int(
-    #             input('Enter the index of the order you would like to update\n> '))
-    #         all_functions.clear_screen()
-
-    #         for attribute in vars(orders[order_to_update]):
-    #             if attribute == "status" or attribute == "order_time" or attribute == "products_list":
-    #                 continue
-    #             yes_or_no = input(
-    #                 f'Do you want to update the {attribute} from {getattr(orders[order_to_update],attribute)}? (y/n)\n> ').strip().lower()
-    #             if attribute == "courier_index" and yes_or_no == 'y':
-    #                 all_functions.clear_screen()
-    #                 couriers_list_index(couriers)
-    #                 index = int(
-    #                     input('\nEnter the index of the new courier\n> '))
-    #                 setattr(orders[order_to_update], attribute, index)
-    #                 continue
-    #             elif yes_or_no == 'y':
-    #                 new_value = input('Enter new value\n> ')
-    #                 setattr(orders[order_to_update], attribute, new_value)
-    #             else:
-    #                 continue
-    #     except:
-    #         print('\nYou have not entered a valid input\n')
-    # else:
-    #     print('You do not have any orders in your order list\n')
-    # input('Press enter to continue')
-    # return orders
-
 
 def add_prod_to_order(con):
+    cur = database.get_cursor(con)
     all_functions.clear_screen()
-    if orders != []:
-        orders_list_index(orders)
-        try:
-            order_to_add_to = int(
-                input('Enter the index of the order you would like to add a product to\n> '))
-            while True:
-                all_functions.clear_screen()
-                to_cont = input(
-                    'Do you want to add another product? (y/n) > ').strip().lower()
-                if to_cont == 'n':
-                    break
-                else:
+    try:
+        is_empty_ord = database.check_if_table_empty(cur,'Orders')
+        is_empty_prod = database.check_if_table_empty(cur,'Product')
+        if not is_empty_ord and not is_empty_prod:
+            try:
+                all_functions.print_list('Orders',con)
+                order_to_add_to = int(
+                    input('Enter the index of the order you would like to add a product to\n> '))
+                while True:
                     all_functions.clear_screen()
-                    product_list_index(products)
+                    all_functions.print_list('Product',con)
                     product_index = int(
-                        input('Enter the index of the product you would like to add\n> '))
+                        input('Enter the id of the product you would like to add\n> '))
                     quant = int(
                         input('Enter the quantity of the product you want to add\n> '))
-                    orders[order_to_add_to].products_list.append(
-                        Product(products[product_index].price, quant, products[product_index].name))
+                    
+                    database.sql_statement(cur,f'''SELECT * FROM Product WHERE id = {product_index}''')
+                    from_db = cur.fetchone()
+                    prod_to_add = Productfile.Product(from_db[0],from_db[2],from_db[3],from_db[1])
+                    if prod_to_add.can_order(quant):
+                        prod_to_add.quantity_subtract(quant)
+                        database.sql_statement(cur,f'''UPDATE Product SET quantity = {prod_to_add.quantity} WHERE id = {prod_to_add.id}''')
+                        database.sql_statement(cur,f'''INSERT INTO OrderProducts (order_id,product_id,quantity) VALUES ({order_to_add_to},{product_index},{quant})''')
+                        con.commit()
+                        print(f'\nYou have added {prod_to_add.name} to your order\n')
+                        input('\nPress enter to continue\n')
+                    else:
+                        print('\nYou can not enter that amount of this product as we do not have enough in stock\n')
+                        input('\nPress enter to continue\n')
 
-        except:
-            print('\nYou have not entered a valid input\n')
+                    
+                    all_functions.clear_screen()
+                    to_cont = input(
+                        'Do you want to add another product? (y/n) > ').strip().lower()
+                    if to_cont == 'n':
+                        break
 
-    return orders
+            except:
+                print('\nYou have not entered a valid input\n')
+                input('\nPress enter to continue\n')
 
-
-def rem_prod_to_order(orders):
-    all_functions.clear_screen()
-    if orders != []:
-        orders_list_index(orders)
-    try:
-        order_to_add_to = int(
-            input('Enter the index of the order you would like to delete a product from\n> '))
-        for i in range(len(orders[order_to_add_to].products_list)):
-            print(
-                f'Product name: {orders[order_to_add_to].products_list[i].name}\tIndex: {i}')
-        to_del = int(input('Enter index of product you want to remove\n> '))
-        orders[order_to_add_to].product_list.pop(to_del)
     except:
-        print('\nYou have not entered a valid input\n')
-        input('Press enter to continue')
+        pass
+    database.close_cursor(cur)
 
-    return orders
+
+def rem_prod_to_order(con):
+    cur = database.get_cursor(con)
+    all_functions.clear_screen()
+    try:
+        is_empty = database.check_if_table_empty(cur,'OrderProducts')
+        
+        if not is_empty:
+            try:
+                all_functions.print_list('Orders',con)
+                order_to_rem_from = int(
+                    input('Enter the index of the order you would like to remove a product from\n> '))
+                while True:
+                    database.sql_statement(cur,f'''SELECT id from Orders''')
+                    all_ids = cur.fetchall()
+                    if (int(order_to_rem_from),) in all_ids:
+                        
+                        database.sql_statement(cur, f'''SELECT Product.id, Product.name, OrderProducts.quantity
+                                                        FROM OrderProducts, Product
+                                                        WHERE Product.id = OrderProducts.product_id 
+                                                        AND {order_to_rem_from} = OrderProducts.order_id''')
+                        items = cur.fetchall()
+                        field_names = [i[0] for i in cur.description]
+                        all_functions.clear_screen()
+                        print(tabulate(items, headers=field_names, tablefmt='psql',stralign='center',numalign='center'))
+                        to_del = int(input('\nEnter the id of the product you would like to remove\n'))
+                        database.sql_statement(cur,f'''SELECT * FROM Product WHERE id = {to_del}''')
+                        from_db = cur.fetchone()
+                        database.sql_statement(cur, f'''SELECT quantity FROM OrderProducts WHERE order_id = {order_to_rem_from} and product_id = {to_del}''')
+                        from_db_2 = cur.fetchone()
+                        prod_to_rem = Productfile.Product(from_db[0],from_db[2],from_db[3],from_db[1])
+                        prod_to_rem.quantity_add(from_db_2[0])
+                        database.sql_statement(cur,f'''UPDATE Product SET quantity = {prod_to_rem.quantity} WHERE id = {to_del}''')
+                        database.sql_statement(cur, f'''DELETE FROM OrderProducts WHERE order_id = {order_to_rem_from} and product_id = {to_del}''')
+                        con.commit()
+
+
+                    all_functions.clear_screen()
+                    to_cont = input(
+                        'Do you want to remove another product? (y/n) > ').strip().lower()
+                    if to_cont == 'n':
+                        break
+                
+            except:
+                pass
+
+
+    except:
+        pass      
+
+    database.close_cursor(cur)
 
 
 def delete_order(con):
@@ -323,7 +346,7 @@ def order_menu_func(con,order_update_menu_text,orders, status_list, couriers, or
     elif option == '5':
         add_prod_to_order(con)
     elif option == '6':
-        orders = rem_prod_to_order(orders)
+        orders = rem_prod_to_order(con)
     elif option == '7':
         delete_order(con)
     elif option == '0':

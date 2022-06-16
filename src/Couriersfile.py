@@ -1,6 +1,7 @@
 import database
 import all_functions
-
+import Ordersfile
+from tabulate import tabulate
 
 class Couriers:
     def __init__(self, id:int, name, phone, delivery):
@@ -121,7 +122,7 @@ def update_courier(con,courier_update_menu_text):
     database.close_cursor(cur)
 
 
-def delete_courier(con,orders):
+def delete_courier(con):
     all_functions.clear_screen()
     cur = database.get_cursor(con)
     is_empty = database.check_if_table_empty(cur,'Couriers')
@@ -129,17 +130,16 @@ def delete_courier(con,orders):
         all_functions.print_list('Couriers',con)
         try:
             courier_index = int(
-                input('Enter index of courier you would like to remove\n> ').strip())
+                input('Enter the id of courier you would like to remove\n> ').strip())
+            database.sql_statement(cur,f'''SELECT * from Couriers WHERE id = {courier_index}''')
+            data = cur.fetchone()
+            cour_class = Couriers(data[0],data[1],data[2],data[3])
+            database.sql_statement(cur,f'''select count(courier_index) from Orders where courier_index = {courier_index}''')
+            count = cur.fetchone()
             all_functions.clear_screen()
-            courier_order = []
-            for i in range(len(orders)):
-                if orders[i].courier_index == courier_index:
-                    courier_order.append(i)
-                elif orders[i].courier_index > courier_index:
-                    orders[i].courier_index -= 1
 
             while True:
-                choice = input(f'''This courier is currently active in {len(courier_order)} orders
+                choice = input(f'''This courier is currently active in {count[0]} orders
 
 Therefore please pick what you would like to do:
 
@@ -152,32 +152,35 @@ Enter 3 to not delete the courier
 
                 if choice == '1':
                     all_functions.clear_screen()
-                    courier_name = couriers[courier_index].name
-                    couriers.pop(courier_index)
+                    courier_name = cour_class.name
+                    database.sql_statement(cur,f'''DELETE FROM Couriers WHERE id = {courier_index}''')
+                    con.commit()
                     print(
                         f'\n{courier_name} has been removed from your couriers\n')
-                    for i in courier_order[::-1]:
-                        orders.pop(i)
+                    
                     break
                 elif choice == '2':
                     all_functions.clear_screen()
-                    courier_name = couriers[courier_index].name
-                    couriers.pop(courier_index)
-                    print(
-                        f'\n{courier_name} has been removed from your couriers\n')
-                    for i in courier_order:
-                        print(f'order to change:\n {repr(orders[i])}')
-                        couriers_list_index(couriers)
+                    orders = []
+                    database.sql_statement(cur,f'''SELECT * FROM Orders WHERE courier_index = {courier_index}''')
+                    data = cur.fetchall()
+                    for i in data:
+                        order_class = Ordersfile.Orders(i[0],i[1],i[2],i[3],i[4],i[5],i[6])
+                        print(order_class)
+                        database.sql_statement(cur,f'''SELECT * FROM Couriers WHERE id != {courier_index}''')
+                        items = cur.fetchall()
+                        field_names = [i[0] for i in cur.description]
+                        print(tabulate(items, headers=field_names, tablefmt='psql',stralign='center',numalign='center'))
                         cour = int(
                             input('\nWhich courier index would you like to switch to\n> '))
-                        orders[i].courier_index = cour
-                        all_functions.clear_screen()
+                        order_class.courier_index = cour
+                        database.sql_statement(cur,f'''UPDATE Orders SET courier_index = {cour} WHERE ID = {order_class.id}''')
+                        con.commit()
+                    database.sql_statement(cur,f'''DELETE FROM Couriers WHERE id = {courier_index}''')
+                    con.commit()
                     break
 
                 elif choice == '3':
-                    for i in range(len(orders)):
-                        if orders[i].courier_index >= courier_index:
-                            orders[i].courier_index += 1
                     break
 
         except:
@@ -185,7 +188,7 @@ Enter 3 to not delete the courier
     else:
         print('\nYou do not have any couriers to delete\n')
     input('Press enter to continue')
-    return orders
+    database.close_cursor(cur)
 
 
 def courier_menu_func(con, orders, courier_menu_text,courier_update_menu_text):
@@ -202,7 +205,7 @@ def courier_menu_func(con, orders, courier_menu_text,courier_update_menu_text):
         update_courier(con,courier_update_menu_text)
     # allows user to delete a courier from the list
     elif option == '4':
-        orders = delete_courier(con, orders)
+        delete_courier(con)
     # allows user to go back to previous menu
     elif option == '0':
         return False, orders

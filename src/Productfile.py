@@ -131,7 +131,7 @@ def delete_products(con):
     all_functions.print_list('Product',con)
     id_to_del = int(input('Enter the id of the product you would like to delete\n> ').strip())
     database.sql_statement(cur,f'''DELETE FROM Product WHERE id = {id_to_del}''')
-    con.commit
+    con.commit()
     database.close_cursor(cur)
 
 

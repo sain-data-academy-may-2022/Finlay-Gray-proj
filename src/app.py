@@ -85,7 +85,7 @@ Enter 0 to return to main menu
 order_update_menu_text = '''Enter 1 to update name of order
 Enter 2 to update address of order
 Enter 3 to update phone number of order
-Enter 4 to change tthe courier of order
+Enter 4 to change the courier of order
 Enter 0 to return to main menu
 > '''
 courier_menu_text = '''Enter 1 to view courier list
@@ -140,16 +140,3 @@ while run:
 database.close_connection(con)
 
 
-def create_json(file_path, list):
-    with open(file_path, "w") as file:
-        json.dump([ob.__dict__ for ob in list], file)
-
-
-create_json('products.json', products)
-
-for order in orders:
-    order.products_list = [ob.__dict__ for ob in order.products_list]
-
-create_json('orders.json', orders)
-
-create_json('couriers.json', couriers)
