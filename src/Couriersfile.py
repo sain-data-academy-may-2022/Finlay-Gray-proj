@@ -191,7 +191,7 @@ Enter 3 to not delete the courier
     database.close_cursor(cur)
 
 
-def courier_menu_func(con, orders, courier_menu_text,courier_update_menu_text):
+def courier_menu_func(con, courier_menu_text,courier_update_menu_text):
     all_functions.clear_screen()
     option = input(courier_menu_text).strip()
     # prints courier list
@@ -208,9 +208,9 @@ def courier_menu_func(con, orders, courier_menu_text,courier_update_menu_text):
         delete_courier(con)
     # allows user to go back to previous menu
     elif option == '0':
-        return False, orders
+        return False
 
     # keeps the loop running
-    return True, orders
+    return True
 
 

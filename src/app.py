@@ -8,44 +8,7 @@ import Couriersfile
 import Ordersfile
 # this is how you get current time time.asctime( time.localtime(time.time()) )
 # setting up inital variables
-products = []
-try:
-    with open('products.json') as product_file:
-        temp_products = json.load(product_file)
-        for product in temp_products:
-            products.append(all_functions.Product(
-                product['price'], product['quantity'], product['name']))
-except:
-    products = []
-orders = []
-try:
-    with open('orders.json') as order_file:
-        temp_orders = json.load(order_file)
-        for order in temp_orders:
-            orders.append(all_functions.Orders(order['name'], order['address'], order['phone_num'],
-                          order['status'], order['order_time'], order['courier_index'], order['products_list']))
 
-        for order in orders:
-            temp_products_list = []
-            for prod in order.products_list:
-                temp_products_list.append(all_functions.Product(
-                    prod['price'], prod['quantity'], prod['name']))
-
-            order.products_list = temp_products_list
-
-
-except:
-    orders = []
-
-couriers = []
-try:
-    with open('couriers.json') as courier_file:
-        temp_couriers = json.load(courier_file)
-        for courier in temp_couriers:
-            couriers.append(all_functions.Couriers(
-                courier['name'], courier['phone'], courier['delivery']))
-except:
-    couriers = []
 
 run = True
 
@@ -126,13 +89,13 @@ while run:
         if not(cont):
             product_menu = False
     while order_menu:
-        cont, orders, couriers = Ordersfile.order_menu_func(con,order_update_menu_text,
-            orders, status_list, couriers, order_menu_text, products)
+        cont = Ordersfile.order_menu_func(con,order_update_menu_text,
+            status_list,order_menu_text)
         if not(cont):
             order_menu = False
     while courier_menu:
-        cont, orders = Couriersfile.courier_menu_func(con,
-             orders, courier_menu_text,courier_update_menu_text)
+        cont = Couriersfile.courier_menu_func(con,
+            courier_menu_text,courier_update_menu_text)
         if not(cont):
             courier_menu = False
 

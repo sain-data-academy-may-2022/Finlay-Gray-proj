@@ -332,7 +332,7 @@ def view_orders(con):
 
 
 
-def order_menu_func(con,order_update_menu_text,orders, status_list, couriers, order_menu_text, products):
+def order_menu_func(con,order_update_menu_text, status_list, order_menu_text):
     all_functions.clear_screen()
     option = input(order_menu_text).strip()
     if option == '1':
@@ -350,6 +350,6 @@ def order_menu_func(con,order_update_menu_text,orders, status_list, couriers, or
     elif option == '7':
         delete_order(con)
     elif option == '0':
-        return False, orders, couriers
+        return False
 
-    return True, orders, couriers
+    return True
