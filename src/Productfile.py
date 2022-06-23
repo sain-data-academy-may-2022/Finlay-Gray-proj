@@ -144,13 +144,7 @@ def add_products(con):
         input('Enter the price of this product\n> ').lower().strip())
     product_quantity = int(
         input('Enter the quantity of this product you have\n> ').strip())
-    # if products != []:
-    #     for product in products:
-    #         if product_name == product.name:
-    #             print(f'\nThis product already exists in your list\n')
-    #             input('Press enter to continue')
-    #             return products
-    #             break
+
     if product_name == ''.strip():
         print(f'\nYou have not entered a valid input\n')
     else:
