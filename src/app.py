@@ -65,40 +65,47 @@ Enter 0 to return to main menu
 status_list = ['PREPARING', 'QUALITY CHECK', 'OUT FOR DELIVERY', 'DELIVERED']
 # function that prints out product list with corresponding index
 
+def main_loop(run,product_menu,order_menu,courier_menu):
+    while run:
+        all_functions.clear_screen()
+        to_continue = input(first_menu_text).strip()
+        if to_continue == '0':
+            run = False
+        elif to_continue == '1':
+            product_menu = True
+            all_functions.clear_screen()
+        elif to_continue == '2':
+            courier_menu = True
+            all_functions.clear_screen()
+        elif to_continue == '3':
+            order_menu = True
+            all_functions.clear_screen()
+        # runs production menu function
+        while product_menu:
+            cont = Productfile.product_menu_func(con,
+                product_menu_text, prod_update_menu_text)
+            if not(cont):
+                product_menu = False
+        while order_menu:
+            cont = Ordersfile.order_menu_func(con,order_update_menu_text,
+                status_list,order_menu_text)
+            if not(cont):
+                order_menu = False
+        while courier_menu:
+            cont = Couriersfile.courier_menu_func(con,
+                courier_menu_text,courier_update_menu_text)
+            if not(cont):
+                courier_menu = False
+
+
+
+
 con = database.get_connection()
 
 
 # main loop
-while run:
-    all_functions.clear_screen()
-    to_continue = input(first_menu_text).strip()
-    if to_continue == '0':
-        run = False
-    elif to_continue == '1':
-        product_menu = True
-        all_functions.clear_screen()
-    elif to_continue == '2':
-        courier_menu = True
-        all_functions.clear_screen()
-    elif to_continue == '3':
-        order_menu = True
-        all_functions.clear_screen()
-    # runs production menu function
-    while product_menu:
-        cont = Productfile.product_menu_func(con,
-            product_menu_text, prod_update_menu_text)
-        if not(cont):
-            product_menu = False
-    while order_menu:
-        cont = Ordersfile.order_menu_func(con,order_update_menu_text,
-            status_list,order_menu_text)
-        if not(cont):
-            order_menu = False
-    while courier_menu:
-        cont = Couriersfile.courier_menu_func(con,
-            courier_menu_text,courier_update_menu_text)
-        if not(cont):
-            courier_menu = False
+
+main_loop(run,product_menu,order_menu,courier_menu)
 
 
 database.close_connection(con)
