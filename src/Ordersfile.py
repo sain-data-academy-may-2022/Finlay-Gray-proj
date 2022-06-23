@@ -215,6 +215,7 @@ def add_prod_to_order(con):
                     else:
                         print('\nYou can not enter that amount of this product as we do not have enough in stock\n')
                         input('\nPress enter to continue\n')
+                        
 
                     
                     all_functions.clear_screen()

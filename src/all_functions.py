@@ -9,7 +9,7 @@ from tabulate import tabulate
 
 
 def clear_screen():
-    os.system('clear')
+    os.system('cls')
 
 # all lost index functions print list with index to screen
 

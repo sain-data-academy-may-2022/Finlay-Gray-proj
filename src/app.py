@@ -67,6 +67,7 @@ status_list = ['PREPARING', 'QUALITY CHECK', 'OUT FOR DELIVERY', 'DELIVERED']
 
 con = database.get_connection()
 
+
 # main loop
 while run:
     all_functions.clear_screen()
