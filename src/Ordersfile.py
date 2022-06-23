@@ -347,7 +347,7 @@ def order_menu_func(con,order_update_menu_text, status_list, order_menu_text):
     elif option == '5':
         add_prod_to_order(con)
     elif option == '6':
-        orders = rem_prod_to_order(con)
+        rem_prod_to_order(con)
     elif option == '7':
         delete_order(con)
     elif option == '0':
