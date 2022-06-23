@@ -44,4 +44,4 @@ cryptography==3.3.2
 pycparser==2.20
 PyMySQL==0.10.1
 python-dotenv==0.15.0
-tabulate=0.8.9
+tabulate==0.8.9

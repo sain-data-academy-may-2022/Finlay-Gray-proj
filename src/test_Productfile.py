@@ -1,6 +1,9 @@
+from dataclasses import dataclass
 import unittest
 import Productfile
-from unittest.mock import patch, call
+import database
+
+from unittest.mock import patch, call, Mock
 
 @patch('builtins.input',side_effect=[' '])
 def test_product_menu_func_if_no_option(mock_input):
@@ -68,3 +71,21 @@ def test_product_menu_func_choice_4(mock_delete_products,mock_input):
     assert actual == expected
     mock_delete_products.assert_called_with(con)
 
+
+@patch('builtins.input',side_effect=['test','12','12',' '])
+@patch('database.sql_statement')
+def test_add_products(mock_sql_statement,mock_input):
+    con = Mock()
+    Productfile.add_products(con)
+    mock_sql_statement.assert_called_with(con.cursor(),"INSERT INTO Product (name,price,quantity) VALUES ('test',12.0,12)")
+
+@patch('builtins.input',side_effect=['100'])
+@patch('database.sql_statement')
+@patch('all_functions.clear_screen')
+@patch('all_functions.print_list')
+def test_delete_products(mock_print_list,mock_clear_screen,mock_sql_statement,mock_input):
+    con = Mock()
+    Productfile.delete_products(con)
+    mock_clear_screen.assert_called()
+    mock_print_list.assert_called_with('Product',con)
+    mock_sql_statement.assert_called_with(con.cursor(),'DELETE FROM Product WHERE id = 100')

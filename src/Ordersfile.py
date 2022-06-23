@@ -34,7 +34,7 @@ def add_orders(con):
                 input('Enter the id of the courier for this order\n> '))
             try:
                 all_functions.clear_screen()
-                name = input('Enter customer name\n> ')
+                name = input('Enter customer name\n> ').title()
                 address = input('\nEnter customer address\n> ')
                 phone_no = input('\nEnter customer phone number\n> ')
                 if len(phone_no) < 10:
@@ -116,7 +116,7 @@ def update_order(con,order_update_menu_text):
                     try:
                         order_old_name = order_class.name
                         order_new_name = input(
-                            '\nEnter new name of order\n> ').strip()
+                            '\nEnter new name of order\n> ').strip().title()
                         order_class.name = order_new_name
                         print(
                             f'\n{order_old_name} has been replaced with {order_new_name}\n')
@@ -163,7 +163,7 @@ def update_order(con,order_update_menu_text):
 
                         order_class.courier_index = courier_index
                         print(
-                            f'\nThe phone number of {order_class.name} has been replaced with {new_phone_num}\n')
+                            f'\nThe courier of {order_class.name} has been replaced with {courier_index}\n')
                         input('Press enter to continue')
                     else:
                         print('\nPLease enter valid input\n')
@@ -215,6 +215,7 @@ def add_prod_to_order(con):
                     else:
                         print('\nYou can not enter that amount of this product as we do not have enough in stock\n')
                         input('\nPress enter to continue\n')
+                        
 
                     
                     all_functions.clear_screen()
@@ -346,7 +347,7 @@ def order_menu_func(con,order_update_menu_text, status_list, order_menu_text):
     elif option == '5':
         add_prod_to_order(con)
     elif option == '6':
-        orders = rem_prod_to_order(con)
+        rem_prod_to_order(con)
     elif option == '7':
         delete_order(con)
     elif option == '0':

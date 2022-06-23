@@ -33,7 +33,7 @@ def add_courier(con):
     cur = database.get_cursor(con)
     all_functions.clear_screen()
     courier_name = input(
-        'Enter the name of the courier you would like to add\n> ').lower().strip()
+        'Enter the name of the courier you would like to add\n> ').title().strip()
     courier_phone = input('Enter the phone number of your courier\n> ')
     courier_vehicle = input('Enter the vehicle your courier uses\n> ')
     database.sql_statement(cur,f'''INSERT INTO Couriers (name,phone,delivery) VALUES ('{courier_name}','{courier_phone}','{courier_vehicle}')''')
@@ -72,7 +72,7 @@ def update_courier(con,courier_update_menu_text):
                     try:
                         cour_old_name = cour_class.name
                         cour_new_name = input(
-                            '\nEnter new name of Courier\n> ').strip()
+                            '\nEnter new name of Courier\n> ').title().strip()
                         cour_class.name_change(cour_new_name)
                         print(
                             f'\n{cour_old_name} has been replaced with {cour_new_name}\n')
@@ -165,6 +165,7 @@ Enter 3 to not delete the courier
                     database.sql_statement(cur,f'''SELECT * FROM Orders WHERE courier_index = {courier_index}''')
                     data = cur.fetchall()
                     for i in data:
+                        all_functions.clear_screen()
                         order_class = Ordersfile.Orders(i[0],i[1],i[2],i[3],i[4],i[5],i[6])
                         print(order_class)
                         database.sql_statement(cur,f'''SELECT * FROM Couriers WHERE id != {courier_index}''')
